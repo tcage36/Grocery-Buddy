@@ -1,4 +1,4 @@
-const CACHE = "grocery-buddy-v2";
+const CACHE = "grocery-buddy-v12";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {

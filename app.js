@@ -115,8 +115,10 @@ function render() {
       node.querySelector("h3").textContent = meal.name;
       node.querySelector(".meta").textContent = `${meal.style} • about ${meal.minutes} minutes • $${meal.cost}${meal.minutes <= 30 ? " • Quick" : ""}`;
       node.querySelector(".ingredients").textContent = meal.ingredients.join(", ");
+      node.querySelector(".swap").addEventListener("click", () => swapMeal(index));
       node.querySelector(".remove").addEventListener("click", () => {
         selectedMeals.splice(index, 1);
+        checkedItems = {};
         save();
         render();
       });
@@ -124,8 +126,7 @@ function render() {
     });
   }
 
-  const total = selectedMeals.reduce((sum, meal) => sum + meal.cost, 0);
-  document.getElementById("mealTotal").textContent = `$${total} estimated`;
+  document.getElementById("mealTotal").textContent = selectedMeals.length ? "Price estimate ignored" : "No plan yet";
 
   const allIngredients = [...new Set(selectedMeals.flatMap(meal => meal.ingredients))].sort();
   groceryList.innerHTML = "";
@@ -185,6 +186,37 @@ function chooseMeal(preference, usedNames, budget) {
   return null;
 }
 
+function swapMeal(index) {
+  const current = selectedMeals[index];
+  if (!current) return;
+
+  const dayIndex = days.indexOf(current.day);
+  const preference = dayPreferences[dayIndex >= 0 ? dayIndex : index] || {
+    day: current.day,
+    style: current.requestedStyle || "all",
+    quick: !!current.requestedQuick
+  };
+  const budget = document.getElementById("budget").value;
+  const usedNames = new Set(selectedMeals.map(meal => meal.name));
+  usedNames.add(current.name);
+
+  const replacement = chooseMeal(preference, usedNames, budget);
+  if (!replacement || replacement.name === current.name) {
+    alert("There are no other matching meals yet for this day. Try changing the style or turning Quick off.");
+    return;
+  }
+
+  selectedMeals[index] = {
+    ...replacement,
+    day: current.day,
+    requestedStyle: preference.style,
+    requestedQuick: preference.quick
+  };
+  checkedItems = {};
+  save();
+  render();
+}
+
 function generatePlan() {
   const count = Number(document.getElementById("mealCount").value);
   const budget = document.getElementById("budget").value;
@@ -206,11 +238,47 @@ function generatePlan() {
   render();
 }
 
-function listText() {
-  const items = [...new Set(selectedMeals.flatMap(meal => meal.ingredients))].sort();
-  const mealNames = selectedMeals.map(meal => `${meal.day}: ${meal.name}`).join("\n");
-  const groceryItems = items.map(item => `☐ ${item}`).join("\n");
-  return `Grocery Buddy Meal Plan\n\n${mealNames}\n\nGrocery List\n${groceryItems}`;
+function groceryItems() {
+  return [...new Set(selectedMeals.flatMap(meal => meal.ingredients))].sort();
+}
+
+function groceryText() {
+  return groceryItems().join("\n");
+}
+
+function mealPlanText() {
+  return selectedMeals.map(meal => `${meal.day}: ${meal.name}`).join("\n");
+}
+
+function completePlanText() {
+  const mealsText = mealPlanText();
+  const groceriesText = groceryText();
+  return `Grocery Buddy Meal Plan\n${mealsText}\n\nGrocery List\n${groceriesText}`;
+}
+
+async function sharePlainText(text, successLabel) {
+  if (!text.trim()) {
+    alert("Generate a meal plan first.");
+    return;
+  }
+
+  if (navigator.share) {
+    try {
+      // Text only is intentional. Adding a web-share title caused iPhone
+      // Shortcuts to receive the title instead of the individual list lines.
+      await navigator.share({ text });
+      return;
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    alert(`${successLabel} copied. Open Shortcuts and run Add Grocery Buddy List.`);
+  } catch {
+    alert("This browser could not share or copy the list.");
+  }
 }
 
 document.getElementById("mealCount").addEventListener("change", renderDayPlanner);
@@ -226,18 +294,20 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 });
 
 document.getElementById("copyBtn").addEventListener("click", async () => {
-  await navigator.clipboard.writeText(listText());
-  alert("Grocery list copied.");
+  if (!selectedMeals.length) {
+    alert("Generate a meal plan first.");
+    return;
+  }
+  await navigator.clipboard.writeText(completePlanText());
+  alert("Complete meal plan and grocery list copied.");
 });
 
-document.getElementById("shareBtn").addEventListener("click", async () => {
-  const text = listText();
-  if (navigator.share) {
-    await navigator.share({ title:"Grocery Buddy", text });
-  } else {
-    await navigator.clipboard.writeText(text);
-    alert("Sharing is not available here, so the list was copied.");
-  }
+document.getElementById("shareGroceriesBtn").addEventListener("click", () => {
+  sharePlainText(groceryText(), "Grocery list");
+});
+
+document.getElementById("shareMealsBtn").addEventListener("click", () => {
+  sharePlainText(mealPlanText(), "Meal plan");
 });
 
 if ("serviceWorker" in navigator) {

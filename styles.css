@@ -121,3 +121,15 @@ button{
   .day-row{grid-template-columns:70px minmax(0,1fr)}
   .quick-toggle{grid-column:2;padding:0 4px 2px}
 }
+
+.version{font-size:.64rem;background:#e9f1ec;color:var(--green-dark);padding:3px 6px;border-radius:999px;letter-spacing:0;vertical-align:middle}
+.meal-buttons{display:flex;flex-direction:column;gap:7px;align-items:stretch;min-width:72px}
+.swap{background:#e9f1ec;color:var(--green-dark);padding:8px 10px;font-size:.82rem}
+.remove{height:auto;padding:8px 10px;font-size:.82rem}
+.reminder-actions{grid-template-columns:1fr 1fr}
+.full-width{grid-column:1 / -1}
+@media (max-width:480px){
+  .reminder-actions{grid-template-columns:1fr}
+  .full-width{grid-column:auto}
+  .meal{align-items:flex-start}
+}

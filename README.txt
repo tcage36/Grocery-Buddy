@@ -1,23 +1,20 @@
-GROCERY BUDDY — iPHONE VERSION 1.1
+GROCERY BUDDY iPHONE — VERSION 1.2
 
-WHAT CHANGED
-- Each day now has its own meal-style selector.
-- "Any style" can be chosen independently for any day.
-- "Quick" is now a separate per-day checkbox.
-- A day can combine a style and Quick, such as Mediterranean + Quick.
-- Meal cards show the assigned day.
-- Shared/copied plans include the day for each meal.
-- The meal library was expanded for better variety.
-- The planner avoids duplicate meals whenever possible.
-- The offline cache version was updated so installed copies receive the new files.
+WHAT IS NEW
+- Separate “Send groceries to Reminders” button.
+- Grocery export contains only one plain ingredient per line.
+- Separate “Send meals to Reminders” button.
+- Swap a single day’s meal without rebuilding the whole week.
+- The swap keeps that day’s meal style and Quick setting.
+- Price estimate is clearly marked to ignore until local Kroger pricing is added.
+- Offline cache bumped so GitHub Pages/iPhone installs update to Version 1.2.
 
-HOW TO USE
-1. Open index.html through GitHub Pages or your existing hosted link.
-2. Select 3, 5, or 7 dinners.
-3. For each displayed day, choose a meal style.
-4. Turn on Quick for days when you want a meal of 30 minutes or less.
-5. Select Generate meal plan.
-6. Use Share list or Copy list for the grocery list.
+USING THE REMINDERS SHORTCUT
+1. Generate a plan.
+2. Tap Send groceries to Reminders.
+3. In the menu that opens, tap Add Grocery Buddy List.
+4. The Shortcut adds each ingredient as its own reminder in Groceries.
 
-NOTE
-If an older Home Screen copy still appears after uploading the update, fully close Safari/the app and reopen it. The updated service worker is set to replace the older cache.
+GITHUB PAGES UPDATE
+Upload the individual files inside this folder to the repository root and tap Commit changes.
+After GitHub Pages finishes deploying, delete the old Home Screen copy if needed, open the site in Safari, refresh, and add it to the Home Screen again.

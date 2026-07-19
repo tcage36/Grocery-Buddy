@@ -15,7 +15,7 @@
 <body>
   <header>
     <div>
-      <p class="eyebrow">GROCERY BUDDY</p>
+      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.2</span></p>
       <h1>Plan meals. Spend less.</h1>
     </div>
     <button id="resetBtn" class="ghost">Reset</button>
@@ -67,7 +67,7 @@
     <section class="card">
       <div class="section-head">
         <h2>Your meals</h2>
-        <span id="mealTotal" class="pill">$0 estimated</span>
+        <span id="mealTotal" class="pill">Price estimate ignored</span>
       </div>
       <div id="mealList" class="meal-list"></div>
     </section>
@@ -78,11 +78,12 @@
         <span id="itemCount" class="pill">0 items</span>
       </div>
       <div id="groceryList" class="grocery-list"></div>
-      <div class="actions">
-        <button id="shareBtn" class="primary">Share list</button>
-        <button id="copyBtn" class="secondary">Copy list</button>
+      <div class="actions reminder-actions">
+        <button id="shareGroceriesBtn" class="primary">Send groceries to Reminders</button>
+        <button id="shareMealsBtn" class="secondary">Send meals to Reminders</button>
+        <button id="copyBtn" class="secondary full-width">Copy complete plan</button>
       </div>
-      <p class="hint">This version saves your plan on this phone. Kroger coupons and Reminders integration are planned next.</p>
+      <p class="hint"><strong>For your Shortcut:</strong> tap “Send groceries to Reminders,” then choose <em>Add Grocery Buddy List</em> from the menu that opens. Grocery Buddy now sends only plain ingredient lines—no heading, checkboxes, meal names, or blank lines.</p>
     </section>
   </main>
 
@@ -94,7 +95,10 @@
         <p class="meta"></p>
         <p class="ingredients"></p>
       </div>
-      <button class="remove" aria-label="Remove meal">×</button>
+      <div class="meal-buttons">
+        <button class="swap" aria-label="Swap meal">Swap</button>
+        <button class="remove" aria-label="Remove meal">Delete</button>
+      </div>
     </article>
   </template>
 
