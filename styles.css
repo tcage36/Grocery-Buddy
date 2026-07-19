@@ -133,3 +133,11 @@ button{
   .full-width{grid-column:auto}
   .meal{align-items:flex-start}
 }
+.side-control{display:block;margin-top:12px;max-width:280px}
+.side-select{margin-top:5px;padding:9px;font-size:.9rem}
+.recipe-link{display:inline-block;margin-top:10px;color:var(--green);font-size:.86rem;font-weight:800;text-decoration:none}
+.recipe-link:active{text-decoration:underline}
+.grocery-item>span{display:flex;flex-direction:column;gap:3px}
+.grocery-item strong{color:var(--text);font-size:.95rem;text-transform:capitalize}
+.grocery-item small{font-size:.78rem;color:var(--muted);font-weight:600}
+.restore-btn{width:100%;margin-top:10px;border:1px solid var(--border);background:#f7faf8}

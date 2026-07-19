@@ -1,20 +1,18 @@
-GROCERY BUDDY iPHONE — VERSION 1.2
+GROCERY BUDDY FOR IPHONE — VERSION 1.3
 
-WHAT IS NEW
-- Separate “Send groceries to Reminders” button.
-- Grocery export contains only one plain ingredient per line.
-- Separate “Send meals to Reminders” button.
-- Swap a single day’s meal without rebuilding the whole week.
-- The swap keeps that day’s meal style and Quick setting.
-- Price estimate is clearly marked to ignore until local Kroger pricing is added.
-- Offline cache bumped so GitHub Pages/iPhone installs update to Version 1.2.
+WHAT CHANGED
+- Checked grocery items immediately disappear from the active list.
+- Checked items mean “already have / do not buy” and are excluded from exports.
+- A Restore checked items button brings hidden items back.
+- Grocery items now include quantities, package type, and fresh/frozen/canned guidance.
+- Quantities scale with the Servings setting and matching ingredients are combined.
+- Every meal has selectable side-dish options.
+- Every meal has a Recipe & prep instructions link.
+- Meal exports include selected side dishes.
+- The grocery export remains compatible with the existing Add Grocery Buddy List iPhone Shortcut.
 
-USING THE REMINDERS SHORTCUT
-1. Generate a plan.
-2. Tap Send groceries to Reminders.
-3. In the menu that opens, tap Add Grocery Buddy List.
-4. The Shortcut adds each ingredient as its own reminder in Groceries.
+KROGER NOTE
+Version 1.3 produces a clean quantity-based list for manual entry into the Kroger app. Directly loading products into a Kroger cart is not included in this version because it requires a supported retailer/API connection and product matching rather than a simple share action.
 
-GITHUB PAGES UPDATE
-Upload the individual files inside this folder to the repository root and tap Commit changes.
-After GitHub Pages finishes deploying, delete the old Home Screen copy if needed, open the site in Safari, refresh, and add it to the Home Screen again.
+INSTALL / UPDATE
+Upload this folder’s contents to the same web host used for version 1.2. If the Home Screen app still shows the old version, close it completely, refresh the hosted page in Safari, and reopen it. Removing and re-adding the Home Screen icon may be necessary if iPhone retains the old cached app.
