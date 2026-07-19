@@ -38,7 +38,7 @@ main{max-width:760px;margin:auto;padding:8px 14px 32px}
   margin:12px 0;
   box-shadow:var(--shadow);
 }
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 label{font-size:.82rem;font-weight:700;color:var(--muted)}
 select{
   width:100%;
@@ -60,6 +60,31 @@ button{
 .secondary{background:#e9f1ec;color:var(--green-dark)}
 .ghost{background:transparent;color:var(--green);padding:8px}
 #generateBtn{width:100%;margin-top:14px}
+.planner-heading{margin:20px 0 10px}
+.planner-heading h3{font-size:1.05rem;margin-bottom:4px}
+.planner-heading p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.4}
+.day-planner{display:grid;gap:10px}
+.day-row{
+  display:grid;
+  grid-template-columns:78px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#fcfdfc;
+}
+.day-name{font-weight:850;font-size:.9rem;color:var(--text)}
+.day-row select{margin:0;padding:10px;font-size:.94rem}
+.quick-toggle{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--green-dark);
+  white-space:nowrap;
+  padding:8px 6px;
+}
+.quick-toggle input{width:21px;height:21px;accent-color:var(--green)}
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .pill{font-size:.75rem;background:#edf4ef;color:var(--green-dark);padding:7px 10px;border-radius:999px;font-weight:800}
 .meal-list,.grocery-list{display:grid;gap:10px}
@@ -72,6 +97,7 @@ button{
   gap:10px;
   background:#fcfdfc;
 }
+.meal-day{margin:0 0 4px;color:var(--green);font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .meta,.ingredients{margin:0;color:var(--muted);font-size:.86rem;line-height:1.4}
 .ingredients{margin-top:6px}
 .remove{background:#f4e9e6;color:#8a3528;padding:4px 10px;height:34px}
@@ -87,7 +113,11 @@ button{
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .hint{font-size:.78rem;color:var(--muted);line-height:1.4;margin:14px 0 0}
 .empty{color:var(--muted);text-align:center;padding:22px 8px}
-@media (max-width:520px){
+@media (max-width:620px){
   .grid{grid-template-columns:1fr}
   h1{font-size:1.75rem}
+}
+@media (max-width:420px){
+  .day-row{grid-template-columns:70px minmax(0,1fr)}
+  .quick-toggle{grid-column:2;padding:0 4px 2px}
 }

@@ -1,96 +1,107 @@
 const meals = [
-  {
-    name: "Greek Chicken Bowls",
-    style: "Mediterranean",
-    cost: 13,
-    minutes: 30,
-    budget: "balanced",
-    ingredients: ["chicken thighs", "rice", "cucumber", "tomatoes", "plain Greek yogurt", "lemon", "feta cheese"]
-  },
-  {
-    name: "Mediterranean Chickpea Pasta",
-    style: "Mediterranean",
-    cost: 9,
-    minutes: 25,
-    budget: "low",
-    ingredients: ["pasta", "chickpeas", "diced tomatoes", "spinach", "garlic", "parmesan cheese"]
-  },
-  {
-    name: "Lemon Garlic Pork Chops",
-    style: "Mediterranean",
-    cost: 12,
-    minutes: 30,
-    budget: "balanced",
-    ingredients: ["pork chops", "potatoes", "green beans", "lemon", "garlic"]
-  },
-  {
-    name: "Shrimp Orzo Skillet",
-    style: "Mediterranean",
-    cost: 15,
-    minutes: 25,
-    budget: "flexible",
-    ingredients: ["shrimp", "orzo", "spinach", "diced tomatoes", "lemon", "feta cheese"]
-  },
-  {
-    name: "Turkey Kofta Pitas",
-    style: "Mediterranean",
-    cost: 12,
-    minutes: 35,
-    budget: "balanced",
-    ingredients: ["ground turkey", "pita bread", "cucumber", "tomatoes", "plain Greek yogurt", "onion"]
-  },
-  {
-    name: "Baked Feta White Beans",
-    style: "Mediterranean",
-    cost: 8,
-    minutes: 30,
-    budget: "low",
-    ingredients: ["white beans", "feta cheese", "cherry tomatoes", "spinach", "bread"]
-  },
-  {
-    name: "Cheeseburger Crunch Wraps",
-    style: "Comfort",
-    cost: 11,
-    minutes: 25,
-    budget: "balanced",
-    ingredients: ["ground beef", "large tortillas", "shredded cheese", "lettuce", "tomatoes", "pickles"]
-  },
-  {
-    name: "Loaded Baked Potatoes",
-    style: "Comfort",
-    cost: 8,
-    minutes: 45,
-    budget: "low",
-    ingredients: ["baking potatoes", "shredded cheese", "sour cream", "bacon bits", "green onions"]
-  },
-  {
-    name: "Creamy Sausage Pasta",
-    style: "Quick",
-    cost: 10,
-    minutes: 25,
-    budget: "balanced",
-    ingredients: ["smoked sausage", "pasta", "cream cheese", "spinach", "diced tomatoes"]
-  },
-  {
-    name: "BBQ Pork Chop Sheet Pan",
-    style: "Quick",
-    cost: 11,
-    minutes: 35,
-    budget: "balanced",
-    ingredients: ["pork chops", "barbecue sauce", "potatoes", "broccoli"]
-  }
+  { name:"Greek Chicken Bowls", style:"Mediterranean", cost:13, minutes:30, budget:"balanced", ingredients:["chicken thighs","rice","cucumber","tomatoes","plain Greek yogurt","lemon","feta cheese"] },
+  { name:"Mediterranean Chickpea Pasta", style:"Mediterranean", cost:9, minutes:25, budget:"low", ingredients:["pasta","chickpeas","diced tomatoes","spinach","garlic","parmesan cheese"] },
+  { name:"Lemon Garlic Pork Chops", style:"Mediterranean", cost:12, minutes:30, budget:"balanced", ingredients:["pork chops","potatoes","green beans","lemon","garlic"] },
+  { name:"Shrimp Orzo Skillet", style:"Mediterranean", cost:15, minutes:25, budget:"flexible", ingredients:["shrimp","orzo","spinach","diced tomatoes","lemon","feta cheese"] },
+  { name:"Turkey Kofta Pitas", style:"Mediterranean", cost:12, minutes:35, budget:"balanced", ingredients:["ground turkey","pita bread","cucumber","tomatoes","plain Greek yogurt","onion"] },
+  { name:"Baked Feta White Beans", style:"Mediterranean", cost:8, minutes:30, budget:"low", ingredients:["white beans","feta cheese","cherry tomatoes","spinach","bread"] },
+  { name:"Mediterranean Tuna Pitas", style:"Mediterranean", cost:9, minutes:15, budget:"low", ingredients:["canned tuna","pita bread","cucumber","tomatoes","plain Greek yogurt","lemon"] },
+  { name:"Chicken Souvlaki Flatbreads", style:"Mediterranean", cost:12, minutes:25, budget:"balanced", ingredients:["chicken breast","flatbread","cucumber","tomatoes","plain Greek yogurt","lemon"] },
+
+  { name:"Cheeseburger Crunch Wraps", style:"American", cost:11, minutes:25, budget:"balanced", ingredients:["ground beef","large tortillas","shredded cheese","lettuce","tomatoes","pickles"] },
+  { name:"Loaded Baked Potatoes", style:"American", cost:8, minutes:45, budget:"low", ingredients:["baking potatoes","shredded cheese","sour cream","bacon bits","green onions"] },
+  { name:"BBQ Pork Chop Sheet Pan", style:"American", cost:11, minutes:35, budget:"balanced", ingredients:["pork chops","barbecue sauce","potatoes","broccoli"] },
+  { name:"Turkey Sloppy Joes", style:"American", cost:9, minutes:25, budget:"low", ingredients:["ground turkey","hamburger buns","sloppy joe sauce","green beans"] },
+  { name:"Chicken Bacon Ranch Flatbreads", style:"American", cost:12, minutes:25, budget:"balanced", ingredients:["flatbread","chicken breast","bacon bits","ranch dressing","shredded cheese"] },
+
+  { name:"Creamy Sausage Pasta", style:"Italian", cost:10, minutes:25, budget:"balanced", ingredients:["smoked sausage","pasta","cream cheese","spinach","diced tomatoes"] },
+  { name:"Skillet Lasagna", style:"Italian", cost:12, minutes:30, budget:"balanced", ingredients:["ground beef","pasta","marinara sauce","ricotta cheese","mozzarella cheese"] },
+  { name:"Pesto Chicken Pasta", style:"Italian", cost:13, minutes:25, budget:"balanced", ingredients:["chicken breast","pasta","pesto","cherry tomatoes","parmesan cheese"] },
+  { name:"Italian White Bean Soup", style:"Italian", cost:8, minutes:30, budget:"low", ingredients:["white beans","diced tomatoes","spinach","carrots","Italian seasoning","bread"] },
+
+  { name:"Beef Taco Bowls", style:"Mexican", cost:11, minutes:25, budget:"balanced", ingredients:["ground beef","rice","black beans","corn","salsa","shredded cheese"] },
+  { name:"Chicken Quesadillas", style:"Mexican", cost:10, minutes:20, budget:"balanced", ingredients:["chicken breast","large tortillas","shredded cheese","salsa","black beans"] },
+  { name:"Black Bean Enchilada Skillet", style:"Mexican", cost:8, minutes:25, budget:"low", ingredients:["black beans","corn tortillas","enchilada sauce","corn","shredded cheese"] },
+  { name:"Pork Carnitas Rice Bowls", style:"Mexican", cost:12, minutes:35, budget:"balanced", ingredients:["pork loin","rice","black beans","salsa","lime"] },
+
+  { name:"Teriyaki Chicken Rice Bowls", style:"Asian-inspired", cost:11, minutes:25, budget:"balanced", ingredients:["chicken thighs","rice","broccoli","teriyaki sauce"] },
+  { name:"Garlic Shrimp Fried Rice", style:"Asian-inspired", cost:13, minutes:20, budget:"balanced", ingredients:["shrimp","rice","frozen mixed vegetables","eggs","soy sauce","garlic"] },
+  { name:"Ground Turkey Lettuce Wraps", style:"Asian-inspired", cost:10, minutes:25, budget:"balanced", ingredients:["ground turkey","lettuce","carrots","soy sauce","rice"] },
+  { name:"Peanut Noodle Bowls", style:"Asian-inspired", cost:8, minutes:20, budget:"low", ingredients:["spaghetti","peanut butter","soy sauce","carrots","cucumber"] },
+
+  { name:"Cowboy Bean Skillet", style:"Comfort", cost:9, minutes:30, budget:"low", ingredients:["ground beef","baked beans","corn","diced tomatoes","shredded cheese"] },
+  { name:"Chicken Alfredo", style:"Comfort", cost:12, minutes:30, budget:"balanced", ingredients:["chicken breast","pasta","alfredo sauce","broccoli","parmesan cheese"] },
+  { name:"Mississippi Chicken Sandwiches", style:"Comfort", cost:12, minutes:40, budget:"balanced", ingredients:["chicken breast","pepperoncini","ranch seasoning","hamburger buns","provolone cheese"] },
+  { name:"One-Pot Chili Mac", style:"Comfort", cost:9, minutes:30, budget:"low", ingredients:["ground beef","pasta","kidney beans","diced tomatoes","shredded cheese"] }
 ];
+
+const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const styles = ["all","Mediterranean","American","Italian","Mexican","Asian-inspired","Comfort"];
+const styleLabels = { all:"Any style", Mediterranean:"Mediterranean", American:"American", Italian:"Italian", Mexican:"Mexican", "Asian-inspired":"Asian-inspired", Comfort:"Comfort food" };
 
 let selectedMeals = JSON.parse(localStorage.getItem("gb_selectedMeals") || "[]");
 let checkedItems = JSON.parse(localStorage.getItem("gb_checkedItems") || "{}");
+let dayPreferences = JSON.parse(localStorage.getItem("gb_dayPreferences") || "null") || days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false }));
 
 const mealList = document.getElementById("mealList");
 const groceryList = document.getElementById("groceryList");
 const mealTemplate = document.getElementById("mealTemplate");
+const dayPlanner = document.getElementById("dayPlanner");
 
 function save() {
   localStorage.setItem("gb_selectedMeals", JSON.stringify(selectedMeals));
   localStorage.setItem("gb_checkedItems", JSON.stringify(checkedItems));
+  localStorage.setItem("gb_dayPreferences", JSON.stringify(dayPreferences));
+}
+
+function renderDayPlanner() {
+  const count = Number(document.getElementById("mealCount").value);
+  dayPlanner.innerHTML = "";
+
+  days.slice(0, count).forEach((day, index) => {
+    const preference = dayPreferences[index] || { day, style:"all", quick:false };
+    preference.day = day;
+    dayPreferences[index] = preference;
+
+    const row = document.createElement("div");
+    row.className = "day-row";
+
+    const dayName = document.createElement("span");
+    dayName.className = "day-name";
+    dayName.textContent = day;
+
+    const select = document.createElement("select");
+    select.setAttribute("aria-label", `${day} meal style`);
+    styles.forEach(style => {
+      const option = document.createElement("option");
+      option.value = style;
+      option.textContent = styleLabels[style];
+      option.selected = preference.style === style;
+      select.appendChild(option);
+    });
+    select.addEventListener("change", () => {
+      dayPreferences[index].style = select.value;
+      save();
+    });
+
+    const quickLabel = document.createElement("label");
+    quickLabel.className = "quick-toggle";
+    const quick = document.createElement("input");
+    quick.type = "checkbox";
+    quick.checked = !!preference.quick;
+    quick.setAttribute("aria-label", `Quick meal for ${day}`);
+    quick.addEventListener("change", () => {
+      dayPreferences[index].quick = quick.checked;
+      save();
+    });
+    const quickText = document.createElement("span");
+    quickText.textContent = "Quick";
+    quickLabel.append(quick, quickText);
+
+    row.append(dayName, select, quickLabel);
+    dayPlanner.appendChild(row);
+  });
+  save();
 }
 
 function render() {
@@ -100,8 +111,9 @@ function render() {
   } else {
     selectedMeals.forEach((meal, index) => {
       const node = mealTemplate.content.cloneNode(true);
+      node.querySelector(".meal-day").textContent = meal.day || days[index] || `Dinner ${index + 1}`;
       node.querySelector("h3").textContent = meal.name;
-      node.querySelector(".meta").textContent = `${meal.style} • about ${meal.minutes} minutes • $${meal.cost}`;
+      node.querySelector(".meta").textContent = `${meal.style} • about ${meal.minutes} minutes • $${meal.cost}${meal.minutes <= 30 ? " • Quick" : ""}`;
       node.querySelector(".ingredients").textContent = meal.ingredients.join(", ");
       node.querySelector(".remove").addEventListener("click", () => {
         selectedMeals.splice(index, 1);
@@ -112,10 +124,10 @@ function render() {
     });
   }
 
-  const total = selectedMeals.reduce((sum, m) => sum + m.cost, 0);
+  const total = selectedMeals.reduce((sum, meal) => sum + meal.cost, 0);
   document.getElementById("mealTotal").textContent = `$${total} estimated`;
 
-  const allIngredients = [...new Set(selectedMeals.flatMap(m => m.ingredients))].sort();
+  const allIngredients = [...new Set(selectedMeals.flatMap(meal => meal.ingredients))].sort();
   groceryList.innerHTML = "";
   if (!allIngredients.length) {
     groceryList.innerHTML = '<div class="empty">Your grocery list will appear here.</div>';
@@ -140,42 +152,76 @@ function render() {
   document.getElementById("itemCount").textContent = `${allIngredients.length} items`;
 }
 
+function shuffled(items) {
+  return [...items].sort(() => Math.random() - 0.5);
+}
+
+function budgetPool(items, budget) {
+  if (budget === "low") return items.filter(meal => meal.cost <= 10);
+  if (budget === "balanced") return items.filter(meal => meal.cost <= 13);
+  return items;
+}
+
+function chooseMeal(preference, usedNames, budget) {
+  const styleMatch = meal => preference.style === "all" || meal.style === preference.style;
+  const quickMatch = meal => !preference.quick || meal.minutes <= 30;
+  const unused = meal => !usedNames.has(meal.name);
+
+  const attempts = [
+    meals.filter(meal => styleMatch(meal) && quickMatch(meal) && unused(meal)),
+    meals.filter(meal => styleMatch(meal) && quickMatch(meal)),
+    meals.filter(meal => styleMatch(meal) && unused(meal)),
+    meals.filter(meal => styleMatch(meal)),
+    meals.filter(meal => quickMatch(meal) && unused(meal)),
+    meals.filter(unused),
+    meals
+  ];
+
+  for (const attempt of attempts) {
+    const withinBudget = budgetPool(attempt, budget);
+    const pool = withinBudget.length ? withinBudget : attempt;
+    if (pool.length) return shuffled(pool)[0];
+  }
+  return null;
+}
+
 function generatePlan() {
-  const style = document.getElementById("styleFilter").value;
   const count = Number(document.getElementById("mealCount").value);
   const budget = document.getElementById("budget").value;
+  const usedNames = new Set();
+  const plan = [];
 
-  let pool = meals.filter(m => style === "all" || m.style === style);
-
-  if (budget === "low") {
-    pool = pool.filter(m => m.cost <= 10);
-  } else if (budget === "balanced") {
-    pool = pool.filter(m => m.cost <= 13);
+  for (let index = 0; index < count; index += 1) {
+    const preference = dayPreferences[index] || { day:days[index], style:"all", quick:false };
+    const meal = chooseMeal(preference, usedNames, budget);
+    if (meal) {
+      usedNames.add(meal.name);
+      plan.push({ ...meal, day:days[index], requestedStyle:preference.style, requestedQuick:preference.quick });
+    }
   }
 
-  if (pool.length < count) {
-    pool = meals.filter(m => style === "all" || m.style === style);
-  }
-
-  selectedMeals = [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+  selectedMeals = plan;
   checkedItems = {};
   save();
   render();
 }
 
 function listText() {
-  const items = [...new Set(selectedMeals.flatMap(m => m.ingredients))].sort();
-  const mealNames = selectedMeals.map((m, i) => `${i + 1}. ${m.name}`).join("\n");
-  const groceryItems = items.map(i => `☐ ${i}`).join("\n");
+  const items = [...new Set(selectedMeals.flatMap(meal => meal.ingredients))].sort();
+  const mealNames = selectedMeals.map(meal => `${meal.day}: ${meal.name}`).join("\n");
+  const groceryItems = items.map(item => `☐ ${item}`).join("\n");
   return `Grocery Buddy Meal Plan\n\n${mealNames}\n\nGrocery List\n${groceryItems}`;
 }
 
+document.getElementById("mealCount").addEventListener("change", renderDayPlanner);
 document.getElementById("generateBtn").addEventListener("click", generatePlan);
 
 document.getElementById("resetBtn").addEventListener("click", () => {
   selectedMeals = [];
   checkedItems = {};
+  dayPreferences = days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false }));
   save();
+  renderDayPlanner();
   render();
 });
 
@@ -187,7 +233,7 @@ document.getElementById("copyBtn").addEventListener("click", async () => {
 document.getElementById("shareBtn").addEventListener("click", async () => {
   const text = listText();
   if (navigator.share) {
-    await navigator.share({ title: "Grocery Buddy", text });
+    await navigator.share({ title:"Grocery Buddy", text });
   } else {
     await navigator.clipboard.writeText(text);
     alert("Sharing is not available here, so the list was copied.");
@@ -198,4 +244,5 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 
+renderDayPlanner();
 render();

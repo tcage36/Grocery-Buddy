@@ -1,28 +1,23 @@
-GROCERY BUDDY V1 — IPHONE WEB APP
+GROCERY BUDDY — iPHONE VERSION 1.1
 
-What this version does
-- Generates 3, 5, or 7 dinner plans
-- Includes Mediterranean, comfort, and quick meal options
-- Filters for lower-cost meal plans
-- Builds one combined grocery list
-- Lets you check off items
-- Saves the current plan on the phone
-- Shares or copies the grocery list
+WHAT CHANGED
+- Each day now has its own meal-style selector.
+- "Any style" can be chosen independently for any day.
+- "Quick" is now a separate per-day checkbox.
+- A day can combine a style and Quick, such as Mediterranean + Quick.
+- Meal cards show the assigned day.
+- Shared/copied plans include the day for each meal.
+- The meal library was expanded for better variety.
+- The planner avoids duplicate meals whenever possible.
+- The offline cache version was updated so installed copies receive the new files.
 
-How to use it on an iPhone
-1. Upload this folder to any simple website host such as GitHub Pages, Netlify, or Cloudflare Pages.
-2. Open the site in Safari on your iPhone.
-3. Tap Share.
-4. Tap Add to Home Screen.
-5. Grocery Buddy will open like a normal app and can work offline after the first visit.
+HOW TO USE
+1. Open index.html through GitHub Pages or your existing hosted link.
+2. Select 3, 5, or 7 dinners.
+3. For each displayed day, choose a meal style.
+4. Turn on Quick for days when you want a meal of 30 minutes or less.
+5. Select Generate meal plan.
+6. Use Share list or Copy list for the grocery list.
 
-Important limitation
-Apple does not allow a normal iPhone app file to be installed directly without Xcode, TestFlight, or the App Store. This V1 is therefore a Progressive Web App so it can be tested quickly on an iPhone.
-
-Planned V2 features
-- Kroger sign-in and coupon matching, depending on available Kroger APIs
-- Price and sale comparison
-- Apple Reminders export or integration
-- Pantry items
-- Favorite meals
-- Weekly spending history
+NOTE
+If an older Home Screen copy still appears after uploading the update, fully close Safari/the app and reopen it. The updated service worker is set to replace the older cache.

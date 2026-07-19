@@ -24,17 +24,7 @@
   <main>
     <section class="card">
       <h2>Build this week’s plan</h2>
-      <div class="grid">
-        <label>
-          Meal style
-          <select id="styleFilter">
-            <option value="all">Any style</option>
-            <option value="Mediterranean" selected>Mediterranean</option>
-            <option value="Comfort">Comfort food</option>
-            <option value="Quick">Quick meals</option>
-          </select>
-        </label>
-
+      <div class="grid settings-grid">
         <label>
           Number of dinners
           <select id="mealCount">
@@ -63,6 +53,14 @@
           </select>
         </label>
       </div>
+
+      <div class="planner-heading">
+        <div>
+          <h3>Choose each day</h3>
+          <p>Pick a meal style and turn on Quick only for the days that need it.</p>
+        </div>
+      </div>
+      <div id="dayPlanner" class="day-planner"></div>
       <button id="generateBtn" class="primary">Generate meal plan</button>
     </section>
 
@@ -84,13 +82,14 @@
         <button id="shareBtn" class="primary">Share list</button>
         <button id="copyBtn" class="secondary">Copy list</button>
       </div>
-      <p class="hint">Version 1 saves your plan on this phone. Kroger coupons and Reminders integration are planned next.</p>
+      <p class="hint">This version saves your plan on this phone. Kroger coupons and Reminders integration are planned next.</p>
     </section>
   </main>
 
   <template id="mealTemplate">
     <article class="meal">
       <div>
+        <p class="meal-day"></p>
         <h3></h3>
         <p class="meta"></p>
         <p class="ingredients"></p>
