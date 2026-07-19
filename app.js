@@ -359,9 +359,26 @@ function generatePlan() {
   render();
 }
 
-function roundAmount(value) {
+function formatRecipeAmount(value) {
   const rounded = Math.round(value * 4) / 4;
-  return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(".25", "¼").replace(".5", "½").replace(".75", "¾");
+  if (Number.isInteger(rounded)) return String(rounded);
+
+  const whole = Math.floor(rounded);
+  const fraction = Math.round((rounded - whole) * 4);
+  const symbol = { 1:"¼", 2:"½", 3:"¾" }[fraction] || "";
+  return whole > 0 ? `${whole}${symbol}` : symbol;
+}
+
+// Grocery-list units that must be purchased as complete items.
+// The meal recipe can still use only part of the package.
+const wholePurchaseUnits = new Set([
+  "can", "cans", "jar", "jars", "bag", "bags", "box", "boxes",
+  "loaf", "loaves", "packet", "packets", "head", "heads", "bunch",
+  "bunches", "bulb", "bulbs", "pint", "pints", "count", "slices"
+]);
+
+function groceryPurchaseAmount(value, unit) {
+  return wholePurchaseUnits.has(unit) ? Math.ceil(value) : value;
 }
 
 function groceryItems(includeChecked = false) {
@@ -378,7 +395,10 @@ function groceryItems(includeChecked = false) {
     });
   });
   return [...combined.values()]
-    .map(item => ({ ...item, detail:`${roundAmount(item.amount)} ${item.unit} • ${item.form}` }))
+    .map(item => {
+      const purchaseAmount = groceryPurchaseAmount(item.amount, item.unit);
+      return { ...item, purchaseAmount, detail:`${formatRecipeAmount(purchaseAmount)} ${item.unit} • ${item.form}` };
+    })
     .filter(item => includeChecked || !checkedItems[item.key])
     .sort((a,b) => a.label.localeCompare(b.label));
 }

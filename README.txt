@@ -1,4 +1,4 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.3
+GROCERY BUDDY FOR IPHONE — VERSION 1.3.1
 
 WHAT CHANGED
 - Checked grocery items immediately disappear from the active list.
@@ -16,3 +16,8 @@ Version 1.3 produces a clean quantity-based list for manual entry into the Kroge
 
 INSTALL / UPDATE
 Upload this folder’s contents to the same web host used for version 1.2. If the Home Screen app still shows the old version, close it completely, refresh the hosted page in Safari, and reopen it. Removing and re-adding the Home Screen icon may be necessary if iPhone retains the old cached app.
+
+
+VERSION 1.3.1 FIX
+- Fractions below one no longer show a leading zero (¾ instead of 0¾).
+- Whole-package grocery items such as cans, jars, bags, boxes, loaves, and packets round up to the quantity that must actually be purchased. Recipe usage can still be fractional.
