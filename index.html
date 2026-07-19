@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f6d4f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Grocery Buddy" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Grocery Buddy</title>
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">GROCERY BUDDY</p>
+      <h1>Plan meals. Spend less.</h1>
+    </div>
+    <button id="resetBtn" class="ghost">Reset</button>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Build this week’s plan</h2>
+      <div class="grid">
+        <label>
+          Meal style
+          <select id="styleFilter">
+            <option value="all">Any style</option>
+            <option value="Mediterranean" selected>Mediterranean</option>
+            <option value="Comfort">Comfort food</option>
+            <option value="Quick">Quick meals</option>
+          </select>
+        </label>
+
+        <label>
+          Number of dinners
+          <select id="mealCount">
+            <option>3</option>
+            <option selected>5</option>
+            <option>7</option>
+          </select>
+        </label>
+
+        <label>
+          Servings
+          <select id="servings">
+            <option>2</option>
+            <option selected>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </label>
+
+        <label>
+          Budget target
+          <select id="budget">
+            <option value="low">Lowest cost</option>
+            <option value="balanced" selected>Balanced</option>
+            <option value="flexible">More variety</option>
+          </select>
+        </label>
+      </div>
+      <button id="generateBtn" class="primary">Generate meal plan</button>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Your meals</h2>
+        <span id="mealTotal" class="pill">$0 estimated</span>
+      </div>
+      <div id="mealList" class="meal-list"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Grocery list</h2>
+        <span id="itemCount" class="pill">0 items</span>
+      </div>
+      <div id="groceryList" class="grocery-list"></div>
+      <div class="actions">
+        <button id="shareBtn" class="primary">Share list</button>
+        <button id="copyBtn" class="secondary">Copy list</button>
+      </div>
+      <p class="hint">Version 1 saves your plan on this phone. Kroger coupons and Reminders integration are planned next.</p>
+    </section>
+  </main>
+
+  <template id="mealTemplate">
+    <article class="meal">
+      <div>
+        <h3></h3>
+        <p class="meta"></p>
+        <p class="ingredients"></p>
+      </div>
+      <button class="remove" aria-label="Remove meal">×</button>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
