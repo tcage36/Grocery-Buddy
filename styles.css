@@ -141,3 +141,22 @@ button{
 .grocery-item strong{color:var(--text);font-size:.95rem;text-transform:capitalize}
 .grocery-item small{font-size:.78rem;color:var(--muted);font-weight:600}
 .restore-btn{width:100%;margin-top:10px;border:1px solid var(--border);background:#f7faf8}
+
+
+.recipe-link{border:0;background:transparent;padding:0;margin-top:10px;color:var(--green);font-size:.86rem;font-weight:800;text-decoration:none;text-align:left}
+.recipe-link:active{text-decoration:underline}
+.meal-content{min-width:0;flex:1}
+.modal[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top)}
+.modal-backdrop{position:absolute;inset:0;background:rgba(17,35,26,.48)}
+.recipe-sheet{position:relative;width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--cream);border-radius:22px 22px 0 0;padding:20px 18px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(0,0,0,.22)}
+.recipe-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:sticky;top:-20px;background:var(--cream);padding:18px 0 12px;z-index:2}
+.recipe-sheet-head h2{margin:0 0 5px;font-size:1.35rem}
+.modal-close{width:42px;height:42px;border-radius:50%;padding:0;background:#e9f1ec;color:var(--green-dark);font-size:1.7rem;line-height:1}
+.recipe-section{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;margin:10px 0}
+.recipe-section h3{font-size:1rem;margin:0 0 10px}
+.recipe-list,.instruction-list{margin:0;padding-left:21px;color:var(--text)}
+.recipe-list li,.instruction-list li{margin:8px 0;line-height:1.42;font-size:.92rem}
+.recipe-source{font-size:.78rem;color:var(--muted);margin:12px 2px 0}
+body.modal-open{overflow:hidden}
+@media (min-width:700px){.modal{align-items:center;padding:24px}.recipe-sheet{border-radius:22px;max-height:88vh}}

@@ -15,7 +15,7 @@
 <body>
   <header>
     <div>
-      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.3.1</span></p>
+      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.4.0</span></p>
       <h1>Plan meals. Spend less.</h1>
     </div>
     <button id="resetBtn" class="ghost">Reset</button>
@@ -25,58 +25,28 @@
     <section class="card">
       <h2>Build this week’s plan</h2>
       <div class="grid settings-grid">
-        <label>
-          Number of dinners
-          <select id="mealCount">
-            <option>3</option>
-            <option selected>5</option>
-            <option>7</option>
-          </select>
+        <label>Number of dinners
+          <select id="mealCount"><option>3</option><option selected>5</option><option>7</option></select>
         </label>
-
-        <label>
-          Servings
-          <select id="servings">
-            <option>2</option>
-            <option selected>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
+        <label>Servings
+          <select id="servings"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
         </label>
-
-        <label>
-          Budget target
-          <select id="budget">
-            <option value="low">Lowest cost</option>
-            <option value="balanced" selected>Balanced</option>
-            <option value="flexible">More variety</option>
-          </select>
+        <label>Budget target
+          <select id="budget"><option value="low">Lowest cost</option><option value="balanced" selected>Balanced</option><option value="flexible">More variety</option></select>
         </label>
       </div>
-
-      <div class="planner-heading">
-        <div>
-          <h3>Choose each day</h3>
-          <p>Pick a meal style and turn on Quick only for the days that need it.</p>
-        </div>
-      </div>
+      <div class="planner-heading"><div><h3>Choose each day</h3><p>Pick a meal style and turn on Quick only for the days that need it.</p></div></div>
       <div id="dayPlanner" class="day-planner"></div>
       <button id="generateBtn" class="primary">Generate meal plan</button>
     </section>
 
     <section class="card">
-      <div class="section-head">
-        <h2>Your meals</h2>
-        <span id="mealTotal" class="pill">Price estimate ignored</span>
-      </div>
+      <div class="section-head"><h2>Your meals</h2><span id="mealTotal" class="pill">No plan yet</span></div>
       <div id="mealList" class="meal-list"></div>
     </section>
 
     <section class="card">
-      <div class="section-head">
-        <h2>Grocery list</h2>
-        <span id="itemCount" class="pill">0 items</span>
-      </div>
+      <div class="section-head"><h2>Grocery list</h2><span id="itemCount" class="pill">0 items</span></div>
       <div id="groceryList" class="grocery-list"></div>
       <button id="restoreCheckedBtn" class="ghost restore-btn" hidden>Restore checked items</button>
       <div class="actions reminder-actions">
@@ -84,30 +54,32 @@
         <button id="shareMealsBtn" class="secondary">Send meals to Reminders</button>
         <button id="copyBtn" class="secondary full-width">Copy complete plan</button>
       </div>
+      <p class="hint"><strong>Buy vs. use:</strong> package items show what to purchase and the exact total the selected recipes use.</p>
       <p class="hint"><strong>Checked means already have:</strong> the item disappears immediately and is excluded from Reminders. Use “Restore checked items” if you checked something by mistake.</p>
-      <p class="hint"><strong>Kroger pickup:</strong> v1.3.1 prepares a clean, quantity-based list for manual cart entry. Direct Kroger cart loading remains a future integration because Kroger does not provide a simple consumer share-to-cart connection.</p>
+      <p class="hint"><strong>Kroger pickup:</strong> v1.4.0 prepares a clean quantity-based list for manual cart entry. Direct cart loading still requires a supported Kroger account/API connection and product matching.</p>
     </section>
   </main>
 
   <template id="mealTemplate">
     <article class="meal">
-      <div>
-        <p class="meal-day"></p>
-        <h3></h3>
-        <p class="meta"></p>
-        <p class="ingredients"></p>
-        <label class="side-control">Side dish
-          <select class="side-select" aria-label="Choose side dish"></select>
-        </label>
-        <a class="recipe-link" target="_blank" rel="noopener noreferrer">Recipe &amp; prep instructions ↗</a>
+      <div class="meal-content">
+        <p class="meal-day"></p><h3></h3><p class="meta"></p><p class="ingredients"></p>
+        <label class="side-control">Side dish<select class="side-select" aria-label="Choose side dish"></select></label>
+        <button class="recipe-link" type="button">Open exact recipe &amp; prep</button>
       </div>
-      <div class="meal-buttons">
-        <button class="swap" aria-label="Swap meal">Swap</button>
-        <button class="remove" aria-label="Remove meal">Delete</button>
-      </div>
+      <div class="meal-buttons"><button class="swap" aria-label="Swap meal">Swap</button><button class="remove" aria-label="Remove meal">Delete</button></div>
     </article>
   </template>
 
+  <div id="recipeModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-recipe></div>
+    <section class="recipe-sheet" role="dialog" aria-modal="true" aria-labelledby="recipeTitle">
+      <div class="recipe-sheet-head"><div><p id="recipeDay" class="meal-day"></p><h2 id="recipeTitle"></h2><p id="recipeMeta" class="meta"></p></div><button id="closeRecipeBtn" class="modal-close" aria-label="Close recipe">×</button></div>
+      <div id="recipeBody"></div>
+    </section>
+  </div>
+
+  <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

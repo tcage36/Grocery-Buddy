@@ -1,174 +1,35 @@
-const meals = [
-  { name:"Greek Chicken Bowls", style:"Mediterranean", cost:13, minutes:30, budget:"balanced", ingredients:["chicken thighs","rice","cucumber","tomatoes","plain Greek yogurt","lemon","feta cheese"] },
-  { name:"Mediterranean Chickpea Pasta", style:"Mediterranean", cost:9, minutes:25, budget:"low", ingredients:["pasta","chickpeas","diced tomatoes","spinach","garlic","parmesan cheese"] },
-  { name:"Lemon Garlic Pork Chops", style:"Mediterranean", cost:12, minutes:30, budget:"balanced", ingredients:["pork chops","potatoes","green beans","lemon","garlic"] },
-  { name:"Shrimp Orzo Skillet", style:"Mediterranean", cost:15, minutes:25, budget:"flexible", ingredients:["shrimp","orzo","spinach","diced tomatoes","lemon","feta cheese"] },
-  { name:"Turkey Kofta Pitas", style:"Mediterranean", cost:12, minutes:35, budget:"balanced", ingredients:["ground turkey","pita bread","cucumber","tomatoes","plain Greek yogurt","onion"] },
-  { name:"Baked Feta White Beans", style:"Mediterranean", cost:8, minutes:30, budget:"low", ingredients:["white beans","feta cheese","cherry tomatoes","spinach","bread"] },
-  { name:"Mediterranean Tuna Pitas", style:"Mediterranean", cost:9, minutes:15, budget:"low", ingredients:["canned tuna","pita bread","cucumber","tomatoes","plain Greek yogurt","lemon"] },
-  { name:"Chicken Souvlaki Flatbreads", style:"Mediterranean", cost:12, minutes:25, budget:"balanced", ingredients:["chicken breast","flatbread","cucumber","tomatoes","plain Greek yogurt","lemon"] },
-
-  { name:"Cheeseburger Crunch Wraps", style:"American", cost:11, minutes:25, budget:"balanced", ingredients:["ground beef","large tortillas","shredded cheese","lettuce","tomatoes","pickles"] },
-  { name:"Loaded Baked Potatoes", style:"American", cost:8, minutes:45, budget:"low", ingredients:["baking potatoes","shredded cheese","sour cream","bacon bits","green onions"] },
-  { name:"BBQ Pork Chop Sheet Pan", style:"American", cost:11, minutes:35, budget:"balanced", ingredients:["pork chops","barbecue sauce","potatoes","broccoli"] },
-  { name:"Turkey Sloppy Joes", style:"American", cost:9, minutes:25, budget:"low", ingredients:["ground turkey","hamburger buns","sloppy joe sauce","green beans"] },
-  { name:"Chicken Bacon Ranch Flatbreads", style:"American", cost:12, minutes:25, budget:"balanced", ingredients:["flatbread","chicken breast","bacon bits","ranch dressing","shredded cheese"] },
-
-  { name:"Creamy Sausage Pasta", style:"Italian", cost:10, minutes:25, budget:"balanced", ingredients:["smoked sausage","pasta","cream cheese","spinach","diced tomatoes"] },
-  { name:"Skillet Lasagna", style:"Italian", cost:12, minutes:30, budget:"balanced", ingredients:["ground beef","pasta","marinara sauce","ricotta cheese","mozzarella cheese"] },
-  { name:"Pesto Chicken Pasta", style:"Italian", cost:13, minutes:25, budget:"balanced", ingredients:["chicken breast","pasta","pesto","cherry tomatoes","parmesan cheese"] },
-  { name:"Italian White Bean Soup", style:"Italian", cost:8, minutes:30, budget:"low", ingredients:["white beans","diced tomatoes","spinach","carrots","Italian seasoning","bread"] },
-
-  { name:"Beef Taco Bowls", style:"Mexican", cost:11, minutes:25, budget:"balanced", ingredients:["ground beef","rice","black beans","corn","salsa","shredded cheese"] },
-  { name:"Chicken Quesadillas", style:"Mexican", cost:10, minutes:20, budget:"balanced", ingredients:["chicken breast","large tortillas","shredded cheese","salsa","black beans"] },
-  { name:"Black Bean Enchilada Skillet", style:"Mexican", cost:8, minutes:25, budget:"low", ingredients:["black beans","corn tortillas","enchilada sauce","corn","shredded cheese"] },
-  { name:"Pork Carnitas Rice Bowls", style:"Mexican", cost:12, minutes:35, budget:"balanced", ingredients:["pork loin","rice","black beans","salsa","lime"] },
-
-  { name:"Teriyaki Chicken Rice Bowls", style:"Asian-inspired", cost:11, minutes:25, budget:"balanced", ingredients:["chicken thighs","rice","broccoli","teriyaki sauce"] },
-  { name:"Garlic Shrimp Fried Rice", style:"Asian-inspired", cost:13, minutes:20, budget:"balanced", ingredients:["shrimp","rice","frozen mixed vegetables","eggs","soy sauce","garlic"] },
-  { name:"Ground Turkey Lettuce Wraps", style:"Asian-inspired", cost:10, minutes:25, budget:"balanced", ingredients:["ground turkey","lettuce","carrots","soy sauce","rice"] },
-  { name:"Peanut Noodle Bowls", style:"Asian-inspired", cost:8, minutes:20, budget:"low", ingredients:["spaghetti","peanut butter","soy sauce","carrots","cucumber"] },
-
-  { name:"Cowboy Bean Skillet", style:"Comfort", cost:9, minutes:30, budget:"low", ingredients:["ground beef","baked beans","corn","diced tomatoes","shredded cheese"] },
-  { name:"Chicken Alfredo", style:"Comfort", cost:12, minutes:30, budget:"balanced", ingredients:["chicken breast","pasta","alfredo sauce","broccoli","parmesan cheese"] },
-  { name:"Mississippi Chicken Sandwiches", style:"Comfort", cost:12, minutes:40, budget:"balanced", ingredients:["chicken breast","pepperoncini","ranch seasoning","hamburger buns","provolone cheese"] },
-  { name:"One-Pot Chili Mac", style:"Comfort", cost:9, minutes:30, budget:"low", ingredients:["ground beef","pasta","kidney beans","diced tomatoes","shredded cheese"] }
-];
-
-
 const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 const styles = ["all","Mediterranean","American","Italian","Mexican","Asian-inspired","Comfort"];
 const styleLabels = { all:"Any style", Mediterranean:"Mediterranean", American:"American", Italian:"Italian", Mexican:"Mexican", "Asian-inspired":"Asian-inspired", Comfort:"Comfort food" };
+const recipeByName = new Map(RECIPES.map(recipe => [recipe.name, recipe]));
 
-const sideOptions = {
-  Mediterranean: [
-    { name:"No side", ingredients:[] },
-    { name:"Greek salad", ingredients:["romaine lettuce","cucumber","tomatoes","feta cheese"] },
-    { name:"Roasted lemon potatoes", ingredients:["potatoes","lemon"] },
-    { name:"Pita and hummus", ingredients:["pita bread","hummus"] }
-  ],
-  American: [
-    { name:"No side", ingredients:[] },
-    { name:"Green beans", ingredients:["green beans"] },
-    { name:"Roasted broccoli", ingredients:["broccoli"] },
-    { name:"Bagged salad", ingredients:["bagged salad"] }
-  ],
-  Italian: [
-    { name:"No side", ingredients:[] },
-    { name:"Garlic bread", ingredients:["garlic bread"] },
-    { name:"Italian salad", ingredients:["bagged salad","Italian dressing"] },
-    { name:"Roasted broccoli", ingredients:["broccoli"] }
-  ],
-  Mexican: [
-    { name:"No side", ingredients:[] },
-    { name:"Chips and salsa", ingredients:["tortilla chips","salsa"] },
-    { name:"Mexican-style corn", ingredients:["frozen corn","lime"] },
-    { name:"Black beans", ingredients:["black beans"] }
-  ],
-  "Asian-inspired": [
-    { name:"No side", ingredients:[] },
-    { name:"Frozen egg rolls", ingredients:["frozen egg rolls"] },
-    { name:"Steamed broccoli", ingredients:["broccoli"] },
-    { name:"Cucumber salad", ingredients:["cucumber","rice vinegar"] }
-  ],
-  Comfort: [
-    { name:"No side", ingredients:[] },
-    { name:"Green beans", ingredients:["green beans"] },
-    { name:"Bagged salad", ingredients:["bagged salad"] },
-    { name:"Garlic bread", ingredients:["garlic bread"] }
-  ]
-};
+function defaultPreferences() {
+  return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false }));
+}
+function loadSelections() {
+  let stored = [];
+  try { stored = JSON.parse(localStorage.getItem("gb_selectedMeals") || "[]"); } catch { stored = []; }
+  return stored.filter(item => item && recipeByName.has(item.name)).map((item, index) => ({
+    name:item.name,
+    day:item.day || days[index] || `Dinner ${index + 1}`,
+    requestedStyle:item.requestedStyle || item.style || "all",
+    requestedQuick:!!item.requestedQuick,
+    side:item.side || "No side"
+  }));
+}
+function loadObject(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || "null") || fallback; } catch { return fallback; }
+}
 
-// Baseline quantities are sized for about three servings. The app scales them
-// using the Servings control and combines matching items across meals and sides.
-const ingredientDetails = {
-  "chicken thighs": { amount:1.5, unit:"lb", form:"boneless, skinless" },
-  "chicken breast": { amount:1.5, unit:"lb", form:"boneless, skinless" },
-  "pork chops": { amount:3, unit:"count", form:"fresh, about 1 inch thick" },
-  "pork loin": { amount:1.5, unit:"lb", form:"fresh" },
-  "ground beef": { amount:1, unit:"lb", form:"fresh" },
-  "ground turkey": { amount:1, unit:"lb", form:"fresh" },
-  "smoked sausage": { amount:14, unit:"oz", form:"fully cooked" },
-  "shrimp": { amount:1, unit:"lb", form:"frozen, peeled and deveined" },
-  "canned tuna": { amount:2, unit:"cans", form:"5 oz cans, drained" },
-  "rice": { amount:1.5, unit:"cups", form:"dry" },
-  "orzo": { amount:12, unit:"oz", form:"dry" },
-  "pasta": { amount:12, unit:"oz", form:"dry" },
-  "spaghetti": { amount:12, unit:"oz", form:"dry" },
-  "large tortillas": { amount:6, unit:"count", form:"flour, burrito size" },
-  "corn tortillas": { amount:8, unit:"count", form:"fresh package" },
-  "pita bread": { amount:6, unit:"count", form:"fresh" },
-  "flatbread": { amount:3, unit:"count", form:"naan or flatbread" },
-  "hamburger buns": { amount:6, unit:"count", form:"fresh" },
-  "bread": { amount:1, unit:"loaf", form:"fresh" },
-  "baking potatoes": { amount:3, unit:"count", form:"large russet" },
-  "potatoes": { amount:1.5, unit:"lb", form:"fresh" },
-  "broccoli": { amount:12, unit:"oz", form:"fresh florets or frozen" },
-  "green beans": { amount:12, unit:"oz", form:"fresh or frozen" },
-  "spinach": { amount:5, unit:"oz", form:"fresh baby spinach" },
-  "lettuce": { amount:1, unit:"head", form:"fresh iceberg or romaine" },
-  "romaine lettuce": { amount:1, unit:"head", form:"fresh" },
-  "bagged salad": { amount:1, unit:"bag", form:"fresh salad kit or greens" },
-  "cucumber": { amount:1, unit:"count", form:"fresh" },
-  "tomatoes": { amount:3, unit:"count", form:"fresh Roma" },
-  "cherry tomatoes": { amount:1, unit:"pint", form:"fresh" },
-  "carrots": { amount:3, unit:"count", form:"fresh" },
-  "onion": { amount:1, unit:"count", form:"fresh" },
-  "green onions": { amount:1, unit:"bunch", form:"fresh" },
-  "garlic": { amount:1, unit:"bulb", form:"fresh" },
-  "lemon": { amount:2, unit:"count", form:"fresh" },
-  "lime": { amount:2, unit:"count", form:"fresh" },
-  "frozen mixed vegetables": { amount:12, unit:"oz", form:"frozen bag" },
-  "frozen corn": { amount:12, unit:"oz", form:"frozen bag" },
-  "corn": { amount:1, unit:"can", form:"15 oz can, drained" },
-  "black beans": { amount:1, unit:"can", form:"15 oz can, drained and rinsed" },
-  "white beans": { amount:2, unit:"cans", form:"15 oz cans, drained and rinsed" },
-  "kidney beans": { amount:1, unit:"can", form:"15 oz can, drained and rinsed" },
-  "baked beans": { amount:1, unit:"can", form:"28 oz can" },
-  "chickpeas": { amount:1, unit:"can", form:"15 oz can, drained and rinsed" },
-  "diced tomatoes": { amount:1, unit:"can", form:"14.5 oz can" },
-  "eggs": { amount:3, unit:"count", form:"large" },
-  "plain Greek yogurt": { amount:16, unit:"oz", form:"plain" },
-  "feta cheese": { amount:6, unit:"oz", form:"crumbled" },
-  "shredded cheese": { amount:8, unit:"oz", form:"shredded cheddar or blend" },
-  "parmesan cheese": { amount:5, unit:"oz", form:"grated or shredded" },
-  "ricotta cheese": { amount:8, unit:"oz", form:"whole or part-skim" },
-  "mozzarella cheese": { amount:8, unit:"oz", form:"shredded" },
-  "provolone cheese": { amount:6, unit:"slices", form:"deli sliced" },
-  "cream cheese": { amount:8, unit:"oz", form:"block" },
-  "sour cream": { amount:8, unit:"oz", form:"tub" },
-  "bacon bits": { amount:3, unit:"oz", form:"real bacon pieces" },
-  "pickles": { amount:16, unit:"oz", form:"dill slices" },
-  "pepperoncini": { amount:12, unit:"oz", form:"jarred, drained" },
-  "peanut butter": { amount:0.5, unit:"cup", form:"creamy" },
-  "barbecue sauce": { amount:12, unit:"oz", form:"bottle" },
-  "sloppy joe sauce": { amount:1, unit:"can", form:"15 oz can" },
-  "ranch dressing": { amount:8, unit:"oz", form:"bottle" },
-  "ranch seasoning": { amount:1, unit:"packet", form:"dry seasoning mix" },
-  "marinara sauce": { amount:24, unit:"oz", form:"jar" },
-  "alfredo sauce": { amount:15, unit:"oz", form:"jar" },
-  "enchilada sauce": { amount:10, unit:"oz", form:"can" },
-  "teriyaki sauce": { amount:10, unit:"oz", form:"bottle" },
-  "soy sauce": { amount:5, unit:"oz", form:"bottle" },
-  "pesto": { amount:6, unit:"oz", form:"jar" },
-  "salsa": { amount:16, unit:"oz", form:"jar, refrigerated or shelf-stable" },
-  "Italian dressing": { amount:8, unit:"oz", form:"bottle" },
-  "rice vinegar": { amount:5, unit:"oz", form:"bottle" },
-  "Italian seasoning": { amount:1, unit:"jar", form:"dried seasoning" },
-  "hummus": { amount:10, unit:"oz", form:"refrigerated tub" },
-  "garlic bread": { amount:1, unit:"loaf", form:"frozen" },
-  "tortilla chips": { amount:1, unit:"bag", form:"10–13 oz" },
-  "frozen egg rolls": { amount:1, unit:"box", form:"frozen, 6 count" }
-};
-
-let selectedMeals = JSON.parse(localStorage.getItem("gb_selectedMeals") || "[]");
-let checkedItems = JSON.parse(localStorage.getItem("gb_checkedItems") || "{}");
-let dayPreferences = JSON.parse(localStorage.getItem("gb_dayPreferences") || "null") || days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false }));
+let selectedMeals = loadSelections();
+let checkedItems = loadObject("gb_checkedItems", {});
+let dayPreferences = loadObject("gb_dayPreferences", defaultPreferences());
 
 const mealList = document.getElementById("mealList");
 const groceryList = document.getElementById("groceryList");
 const mealTemplate = document.getElementById("mealTemplate");
 const dayPlanner = document.getElementById("dayPlanner");
+const recipeModal = document.getElementById("recipeModal");
 
 function save() {
   localStorage.setItem("gb_selectedMeals", JSON.stringify(selectedMeals));
@@ -183,264 +44,201 @@ function renderDayPlanner() {
     const preference = dayPreferences[index] || { day, style:"all", quick:false };
     preference.day = day;
     dayPreferences[index] = preference;
-    const row = document.createElement("div");
-    row.className = "day-row";
-    const dayName = document.createElement("span");
-    dayName.className = "day-name";
-    dayName.textContent = day;
-    const select = document.createElement("select");
-    select.setAttribute("aria-label", `${day} meal style`);
+    const row = document.createElement("div"); row.className = "day-row";
+    const dayName = document.createElement("span"); dayName.className = "day-name"; dayName.textContent = day;
+    const select = document.createElement("select"); select.setAttribute("aria-label", `${day} meal style`);
     styles.forEach(style => {
-      const option = document.createElement("option");
-      option.value = style;
-      option.textContent = styleLabels[style];
-      option.selected = preference.style === style;
-      select.appendChild(option);
+      const option = document.createElement("option"); option.value = style; option.textContent = styleLabels[style]; option.selected = preference.style === style; select.appendChild(option);
     });
     select.addEventListener("change", () => { dayPreferences[index].style = select.value; save(); });
-    const quickLabel = document.createElement("label");
-    quickLabel.className = "quick-toggle";
-    const quick = document.createElement("input");
-    quick.type = "checkbox";
-    quick.checked = !!preference.quick;
-    quick.setAttribute("aria-label", `Quick meal for ${day}`);
+    const quickLabel = document.createElement("label"); quickLabel.className = "quick-toggle";
+    const quick = document.createElement("input"); quick.type = "checkbox"; quick.checked = !!preference.quick; quick.setAttribute("aria-label", `Quick meal for ${day}`);
     quick.addEventListener("change", () => { dayPreferences[index].quick = quick.checked; save(); });
-    const quickText = document.createElement("span");
-    quickText.textContent = "Quick";
-    quickLabel.append(quick, quickText);
-    row.append(dayName, select, quickLabel);
-    dayPlanner.appendChild(row);
+    const quickText = document.createElement("span"); quickText.textContent = "Quick";
+    quickLabel.append(quick, quickText); row.append(dayName, select, quickLabel); dayPlanner.appendChild(row);
   });
   save();
 }
 
-function recipeUrl(mealName) {
-  return `https://www.google.com/search?q=${encodeURIComponent(mealName + " easy recipe instructions")}`;
+function sideForSelection(selection, recipe) {
+  const options = SIDE_OPTIONS[recipe.style] || [{ name:"No side", ingredients:[], instructions:[] }];
+  return options.find(side => side.name === selection.side) || options[0];
+}
+function scaledAmount(amount, baseServings=3) {
+  const servings = Number(document.getElementById("servings").value || 3);
+  return amount * servings / baseServings;
+}
+function formatAmount(value) {
+  const whole = Math.floor(value + 1e-9);
+  const remainder = value - whole;
+  if (remainder < 0.03) return String(whole);
+  const options = [
+    [1/8,"⅛"],[1/6,"⅙"],[1/4,"¼"],[1/3,"⅓"],[3/8,"⅜"],
+    [1/2,"½"],[5/8,"⅝"],[2/3,"⅔"],[3/4,"¾"],[5/6,"⅚"],[7/8,"⅞"]
+  ];
+  let best = options[0];
+  for (const option of options) if (Math.abs(remainder - option[0]) < Math.abs(remainder - best[0])) best = option;
+  if (remainder > 0.94) return String(whole + 1);
+  return whole > 0 ? `${whole}${best[1]}` : best[1];
+}
+function pluralize(word, amount) {
+  if (["oz","lb","tbsp","tsp"].includes(word)) return word;
+  if (Math.abs(amount - 1) < 0.001) return word;
+  const irregular = { can:"cans", head:"heads", bunch:"bunches", loaf:"loaves", box:"boxes", slice:"slices", clove:"cloves", packet:"packets", bag:"bags", pint:"pints", stalk:"stalks", count:"count" };
+  return irregular[word] || (word.endsWith("s") ? word : `${word}s`);
+}
+function recipeIngredientText(line, baseServings=3) {
+  const item = INGREDIENT_CATALOG[line.key];
+  const amount = scaledAmount(line.amount, baseServings);
+  if (item.unit === "count") {
+    const noun = amount === 1 ? item.label : (item.plural || item.label);
+    return `${formatAmount(amount)} ${noun} — ${item.form}`;
+  }
+  return `${formatAmount(amount)} ${pluralize(item.unit, amount)} ${item.label} — ${item.form}`;
 }
 
-function sideForMeal(meal) {
-  const options = sideOptions[meal.style] || [{ name:"No side", ingredients:[] }];
-  return options.find(side => side.name === meal.side) || options[0];
+function openRecipe(selection, index) {
+  const recipe = recipeByName.get(selection.name); if (!recipe) return;
+  const side = sideForSelection(selection, recipe);
+  const servings = Number(document.getElementById("servings").value || 3);
+  document.getElementById("recipeDay").textContent = selection.day || days[index] || `Dinner ${index + 1}`;
+  document.getElementById("recipeTitle").textContent = recipe.name;
+  document.getElementById("recipeMeta").textContent = `${recipe.style} • about ${recipe.minutes} minutes • serves ${servings}`;
+  const body = document.getElementById("recipeBody"); body.innerHTML = "";
+
+  const ingredientsSection = document.createElement("section"); ingredientsSection.className = "recipe-section";
+  ingredientsSection.innerHTML = "<h3>Exact ingredients</h3>";
+  const ingredientList = document.createElement("ul"); ingredientList.className = "recipe-list";
+  recipe.ingredients.forEach(line => { const li=document.createElement("li"); li.textContent=recipeIngredientText(line, recipe.baseServings); ingredientList.appendChild(li); });
+  ingredientsSection.appendChild(ingredientList); body.appendChild(ingredientsSection);
+
+  const stepsSection = document.createElement("section"); stepsSection.className = "recipe-section"; stepsSection.innerHTML = "<h3>Prep & cooking instructions</h3>";
+  const stepsList = document.createElement("ol"); stepsList.className = "instruction-list";
+  recipe.instructions.forEach(step => { const li=document.createElement("li"); li.textContent=step; stepsList.appendChild(li); });
+  stepsSection.appendChild(stepsList); body.appendChild(stepsSection);
+
+  if (side.name !== "No side") {
+    const sideSection = document.createElement("section"); sideSection.className = "recipe-section";
+    const heading = document.createElement("h3"); heading.textContent = `Selected side: ${side.name}`; sideSection.appendChild(heading);
+    const sideIngredients = document.createElement("ul"); sideIngredients.className = "recipe-list";
+    side.ingredients.forEach(line => { const li=document.createElement("li"); li.textContent=recipeIngredientText(line, 3); sideIngredients.appendChild(li); });
+    sideSection.appendChild(sideIngredients);
+    const sideSteps = document.createElement("ol"); sideSteps.className = "instruction-list";
+    side.instructions.forEach(step => { const li=document.createElement("li"); li.textContent=step; sideSteps.appendChild(li); });
+    sideSection.appendChild(sideSteps); body.appendChild(sideSection);
+  }
+  const source = document.createElement("p"); source.className = "recipe-source"; source.textContent = `${recipe.source}. This stored recipe is the source used to build the grocery quantities above.`; body.appendChild(source);
+  recipeModal.hidden = false; document.body.classList.add("modal-open"); document.getElementById("closeRecipeBtn").focus();
 }
+function closeRecipe() { recipeModal.hidden = true; document.body.classList.remove("modal-open"); }
 
 function render() {
   mealList.innerHTML = "";
   if (!selectedMeals.length) {
     mealList.innerHTML = '<div class="empty">Generate a plan to get started.</div>';
   } else {
-    selectedMeals.forEach((meal, index) => {
+    selectedMeals.forEach((selection, index) => {
+      const recipe = recipeByName.get(selection.name); if (!recipe) return;
       const node = mealTemplate.content.cloneNode(true);
-      node.querySelector(".meal-day").textContent = meal.day || days[index] || `Dinner ${index + 1}`;
-      node.querySelector("h3").textContent = meal.name;
-      node.querySelector(".meta").textContent = `${meal.style} • about ${meal.minutes} minutes • $${meal.cost}${meal.minutes <= 30 ? " • Quick" : ""}`;
-      node.querySelector(".ingredients").textContent = meal.ingredients.join(", ");
+      node.querySelector(".meal-day").textContent = selection.day || days[index] || `Dinner ${index + 1}`;
+      node.querySelector("h3").textContent = recipe.name;
+      node.querySelector(".meta").textContent = `${recipe.style} • about ${recipe.minutes} minutes • $${recipe.cost}${recipe.minutes <= 30 ? " • Quick" : ""}`;
+      node.querySelector(".ingredients").textContent = `Uses: ${recipe.ingredients.slice(0,7).map(line => INGREDIENT_CATALOG[line.key].label).join(", ")}${recipe.ingredients.length > 7 ? "…" : ""}`;
       const sideSelect = node.querySelector(".side-select");
-      (sideOptions[meal.style] || []).forEach(side => {
-        const option = document.createElement("option");
-        option.value = side.name;
-        option.textContent = side.name;
-        option.selected = side.name === (meal.side || "No side");
-        sideSelect.appendChild(option);
+      (SIDE_OPTIONS[recipe.style] || []).forEach(side => {
+        const option = document.createElement("option"); option.value = side.name; option.textContent = side.name; option.selected = side.name === (selection.side || "No side"); sideSelect.appendChild(option);
       });
-      sideSelect.addEventListener("change", () => {
-        selectedMeals[index].side = sideSelect.value;
-        checkedItems = {};
-        save();
-        render();
-      });
-      const recipeLink = node.querySelector(".recipe-link");
-      recipeLink.href = recipeUrl(meal.name);
+      sideSelect.addEventListener("change", () => { selectedMeals[index].side = sideSelect.value; checkedItems = {}; save(); render(); });
+      node.querySelector(".recipe-link").addEventListener("click", () => openRecipe(selection, index));
       node.querySelector(".swap").addEventListener("click", () => swapMeal(index));
-      node.querySelector(".remove").addEventListener("click", () => {
-        selectedMeals.splice(index, 1);
-        checkedItems = {};
-        save();
-        render();
-      });
+      node.querySelector(".remove").addEventListener("click", () => { selectedMeals.splice(index,1); checkedItems={}; save(); render(); });
       mealList.appendChild(node);
     });
   }
 
   document.getElementById("mealTotal").textContent = selectedMeals.length ? `${selectedMeals.length} meals` : "No plan yet";
-  const activeItems = groceryItems(false);
-  groceryList.innerHTML = "";
+  const activeItems = groceryItems(false); groceryList.innerHTML = "";
   if (!activeItems.length) {
-    groceryList.innerHTML = selectedMeals.length
-      ? '<div class="empty">Everything is checked off. Checked items will not be sent to Reminders.</div>'
-      : '<div class="empty">Your grocery list will appear here.</div>';
+    groceryList.innerHTML = selectedMeals.length ? '<div class="empty">Everything is checked off. Checked items will not be sent to Reminders.</div>' : '<div class="empty">Your grocery list will appear here.</div>';
   } else {
     activeItems.forEach(item => {
-      const row = document.createElement("label");
-      row.className = "grocery-item";
-      const check = document.createElement("input");
-      check.type = "checkbox";
-      check.setAttribute("aria-label", `Already have ${item.label}`);
-      check.addEventListener("change", () => {
-        checkedItems[item.key] = true;
-        save();
-        render();
-      });
-      const textWrap = document.createElement("span");
-      const name = document.createElement("strong");
-      name.textContent = item.label;
-      const detail = document.createElement("small");
-      detail.textContent = item.detail;
-      textWrap.append(name, detail);
-      row.append(check, textWrap);
-      groceryList.appendChild(row);
+      const row=document.createElement("label"); row.className="grocery-item";
+      const check=document.createElement("input"); check.type="checkbox"; check.setAttribute("aria-label",`Already have ${item.label}`);
+      check.addEventListener("change",()=>{checkedItems[item.key]=true;save();render();});
+      const textWrap=document.createElement("span"); const name=document.createElement("strong"); name.textContent=item.label;
+      const detail=document.createElement("small"); detail.textContent=item.detail; textWrap.append(name,detail); row.append(check,textWrap); groceryList.appendChild(row);
     });
   }
-  const hiddenCount = Object.keys(checkedItems).filter(key => checkedItems[key]).length;
+  const validKeys = new Set(groceryItems(true).map(item => item.key));
+  const hiddenCount = Object.keys(checkedItems).filter(key => checkedItems[key] && validKeys.has(key)).length;
   document.getElementById("itemCount").textContent = hiddenCount ? `${activeItems.length} to buy • ${hiddenCount} have` : `${activeItems.length} items`;
   document.getElementById("restoreCheckedBtn").hidden = hiddenCount === 0;
 }
 
 function shuffled(items) { return [...items].sort(() => Math.random() - 0.5); }
-function budgetPool(items, budget) {
-  if (budget === "low") return items.filter(meal => meal.cost <= 10);
-  if (budget === "balanced") return items.filter(meal => meal.cost <= 13);
-  return items;
-}
-function chooseMeal(preference, usedNames, budget) {
-  const styleMatch = meal => preference.style === "all" || meal.style === preference.style;
-  const quickMatch = meal => !preference.quick || meal.minutes <= 30;
-  const unused = meal => !usedNames.has(meal.name);
-  const attempts = [
-    meals.filter(meal => styleMatch(meal) && quickMatch(meal) && unused(meal)),
-    meals.filter(meal => styleMatch(meal) && quickMatch(meal)),
-    meals.filter(meal => styleMatch(meal) && unused(meal)),
-    meals.filter(meal => styleMatch(meal)),
-    meals.filter(meal => quickMatch(meal) && unused(meal)),
-    meals.filter(unused), meals
-  ];
-  for (const attempt of attempts) {
-    const withinBudget = budgetPool(attempt, budget);
-    const pool = withinBudget.length ? withinBudget : attempt;
-    if (pool.length) return shuffled(pool)[0];
-  }
+function budgetPool(items,budget) { if (budget === "low") return items.filter(r=>r.cost<=10); if (budget === "balanced") return items.filter(r=>r.cost<=13); return items; }
+function chooseMeal(preference,usedNames,budget) {
+  const styleMatch = r => preference.style === "all" || r.style === preference.style;
+  const quickMatch = r => !preference.quick || r.minutes <= 30;
+  const unused = r => !usedNames.has(r.name);
+  const attempts=[RECIPES.filter(r=>styleMatch(r)&&quickMatch(r)&&unused(r)),RECIPES.filter(r=>styleMatch(r)&&quickMatch(r)),RECIPES.filter(r=>styleMatch(r)&&unused(r)),RECIPES.filter(styleMatch),RECIPES.filter(r=>quickMatch(r)&&unused(r)),RECIPES.filter(unused),RECIPES];
+  for (const attempt of attempts) { const within=budgetPool(attempt,budget); const pool=within.length?within:attempt; if(pool.length)return shuffled(pool)[0]; }
   return null;
 }
-
 function swapMeal(index) {
-  const current = selectedMeals[index];
-  if (!current) return;
-  const dayIndex = days.indexOf(current.day);
-  const preference = dayPreferences[dayIndex >= 0 ? dayIndex : index] || { day:current.day, style:current.requestedStyle || "all", quick:!!current.requestedQuick };
-  const budget = document.getElementById("budget").value;
-  const usedNames = new Set(selectedMeals.map(meal => meal.name));
-  usedNames.add(current.name);
-  const replacement = chooseMeal(preference, usedNames, budget);
-  if (!replacement || replacement.name === current.name) {
-    alert("There are no other matching meals yet for this day. Try changing the style or turning Quick off.");
-    return;
-  }
-  selectedMeals[index] = { ...replacement, day:current.day, requestedStyle:preference.style, requestedQuick:preference.quick, side:"No side" };
-  checkedItems = {};
-  save();
-  render();
+  const current=selectedMeals[index]; if(!current)return;
+  const dayIndex=days.indexOf(current.day); const preference=dayPreferences[dayIndex>=0?dayIndex:index]||{day:current.day,style:current.requestedStyle||"all",quick:!!current.requestedQuick};
+  const usedNames=new Set(selectedMeals.map(item=>item.name)); usedNames.add(current.name);
+  const replacement=chooseMeal(preference,usedNames,document.getElementById("budget").value);
+  if(!replacement||replacement.name===current.name){alert("There are no other matching meals for this day. Try changing the style or turning Quick off.");return;}
+  selectedMeals[index]={name:replacement.name,day:current.day,requestedStyle:preference.style,requestedQuick:preference.quick,side:"No side"}; checkedItems={}; save(); render();
 }
-
 function generatePlan() {
-  const count = Number(document.getElementById("mealCount").value);
-  const budget = document.getElementById("budget").value;
-  const usedNames = new Set();
-  const plan = [];
-  for (let index = 0; index < count; index += 1) {
-    const preference = dayPreferences[index] || { day:days[index], style:"all", quick:false };
-    const meal = chooseMeal(preference, usedNames, budget);
-    if (meal) {
-      usedNames.add(meal.name);
-      plan.push({ ...meal, day:days[index], requestedStyle:preference.style, requestedQuick:preference.quick, side:"No side" });
-    }
+  const count=Number(document.getElementById("mealCount").value); const budget=document.getElementById("budget").value; const usedNames=new Set(); const plan=[];
+  for(let index=0;index<count;index+=1){const preference=dayPreferences[index]||{day:days[index],style:"all",quick:false}; const recipe=chooseMeal(preference,usedNames,budget); if(recipe){usedNames.add(recipe.name);plan.push({name:recipe.name,day:days[index],requestedStyle:preference.style,requestedQuick:preference.quick,side:"No side"});}}
+  selectedMeals=plan;checkedItems={};save();render();
+}
+
+function purchaseDetail(item,total) {
+  const useText = `${formatAmount(total)} ${pluralize(item.unit,total)}`;
+  if (item.packageSize) {
+    const packages=Math.ceil(total/item.packageSize); const noun=pluralize(item.purchaseUnit||"package",packages);
+    return `Buy ${packages} ${noun}${item.packageLabel?` (${item.packageLabel}${packages>1?" each":""})`:""} • recipes use ${useText} • ${item.form}`;
   }
-  selectedMeals = plan;
-  checkedItems = {};
-  save();
-  render();
+  const buyAmount=item.wholePurchase?Math.ceil(total):total;
+  if (item.unit === "count") {
+    return `Buy ${formatAmount(buyAmount)} • ${item.form}${Math.abs(buyAmount-total)>.001?` • recipes use ${formatAmount(total)}`:""}`;
+  }
+  return `Buy ${formatAmount(buyAmount)} ${pluralize(item.unit,buyAmount)} • ${item.form}${Math.abs(buyAmount-total)>.001?` • recipes use ${useText}`:""}`;
 }
-
-function formatRecipeAmount(value) {
-  const rounded = Math.round(value * 4) / 4;
-  if (Number.isInteger(rounded)) return String(rounded);
-
-  const whole = Math.floor(rounded);
-  const fraction = Math.round((rounded - whole) * 4);
-  const symbol = { 1:"¼", 2:"½", 3:"¾" }[fraction] || "";
-  return whole > 0 ? `${whole}${symbol}` : symbol;
-}
-
-// Grocery-list units that must be purchased as complete items.
-// The meal recipe can still use only part of the package.
-const wholePurchaseUnits = new Set([
-  "can", "cans", "jar", "jars", "bag", "bags", "box", "boxes",
-  "loaf", "loaves", "packet", "packets", "head", "heads", "bunch",
-  "bunches", "bulb", "bulbs", "pint", "pints", "count", "slices"
-]);
-
-function groceryPurchaseAmount(value, unit) {
-  return wholePurchaseUnits.has(unit) ? Math.ceil(value) : value;
-}
-
-function groceryItems(includeChecked = false) {
-  const servings = Number(document.getElementById("servings").value || 3);
-  const scale = servings / 3;
-  const combined = new Map();
-  selectedMeals.forEach(meal => {
-    const side = sideForMeal(meal);
-    [...meal.ingredients, ...side.ingredients].forEach(key => {
-      const base = ingredientDetails[key] || { amount:1, unit:"package", form:"check recipe" };
-      const id = `${key}|${base.unit}|${base.form}`;
-      if (!combined.has(id)) combined.set(id, { key:id, label:key, amount:0, unit:base.unit, form:base.form });
-      combined.get(id).amount += base.amount * scale;
+function groceryItems(includeChecked=false) {
+  const combined=new Map();
+  selectedMeals.forEach(selection=>{
+    const recipe=recipeByName.get(selection.name); if(!recipe)return;
+    const side=sideForSelection(selection,recipe);
+    [...recipe.ingredients,...side.ingredients].forEach(line=>{
+      const catalogItem=INGREDIENT_CATALOG[line.key]; const amount=scaledAmount(line.amount, recipe.baseServings || 3);
+      if(!combined.has(line.key))combined.set(line.key,{key:line.key,label:catalogItem.label,amount:0,catalogItem}); combined.get(line.key).amount+=amount;
     });
   });
-  return [...combined.values()]
-    .map(item => {
-      const purchaseAmount = groceryPurchaseAmount(item.amount, item.unit);
-      return { ...item, purchaseAmount, detail:`${formatRecipeAmount(purchaseAmount)} ${item.unit} • ${item.form}` };
-    })
-    .filter(item => includeChecked || !checkedItems[item.key])
-    .sort((a,b) => a.label.localeCompare(b.label));
+  return [...combined.values()].map(item=>({...item,detail:purchaseDetail(item.catalogItem,item.amount)})).filter(item=>includeChecked||!checkedItems[item.key]).sort((a,b)=>a.label.localeCompare(b.label));
 }
+function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${item.detail}`).join("\n");}
+function mealPlanText(){return selectedMeals.map(item=>`${item.day}: ${item.name}${item.side&&item.side!=="No side"?` + ${item.side}`:""}`).join("\n");}
+function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
+async function sharePlainText(text,successLabel){if(!text.trim()){alert("There are no unchecked items to share.");return;}if(navigator.share){try{await navigator.share({text});return;}catch(error){if(error&&error.name==="AbortError")return;}}try{await navigator.clipboard.writeText(text);alert(`${successLabel} copied. Open Shortcuts and run Add Grocery Buddy List.`);}catch{alert("This browser could not share or copy the list.");}}
 
-function groceryText() {
-  return groceryItems(false).map(item => `${item.label} — ${item.detail}`).join("\n");
-}
-function mealPlanText() {
-  return selectedMeals.map(meal => `${meal.day}: ${meal.name}${meal.side && meal.side !== "No side" ? ` + ${meal.side}` : ""}`).join("\n");
-}
-function completePlanText() {
-  return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;
-}
-async function sharePlainText(text, successLabel) {
-  if (!text.trim()) { alert("There are no unchecked items to share."); return; }
-  if (navigator.share) {
-    try { await navigator.share({ text }); return; }
-    catch (error) { if (error && error.name === "AbortError") return; }
-  }
-  try {
-    await navigator.clipboard.writeText(text);
-    alert(`${successLabel} copied. Open Shortcuts and run Add Grocery Buddy List.`);
-  } catch { alert("This browser could not share or copy the list."); }
-}
-
-document.getElementById("mealCount").addEventListener("change", renderDayPlanner);
-document.getElementById("servings").addEventListener("change", render);
-document.getElementById("generateBtn").addEventListener("click", generatePlan);
-document.getElementById("restoreCheckedBtn").addEventListener("click", () => { checkedItems = {}; save(); render(); });
-document.getElementById("resetBtn").addEventListener("click", () => {
-  selectedMeals = [];
-  checkedItems = {};
-  dayPreferences = days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false }));
-  save(); renderDayPlanner(); render();
-});
-document.getElementById("copyBtn").addEventListener("click", async () => {
-  if (!selectedMeals.length) { alert("Generate a meal plan first."); return; }
-  await navigator.clipboard.writeText(completePlanText());
-  alert("Complete meal plan and unchecked grocery list copied.");
-});
-document.getElementById("shareGroceriesBtn").addEventListener("click", () => sharePlainText(groceryText(), "Grocery list"));
-document.getElementById("shareMealsBtn").addEventListener("click", () => sharePlainText(mealPlanText(), "Meal plan"));
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js");
-renderDayPlanner();
-render();
+// Changing servings changes exact recipe and grocery quantities, so hidden-item choices reset.
+document.getElementById("mealCount").addEventListener("change",renderDayPlanner);
+document.getElementById("servings").addEventListener("change",()=>{checkedItems={};save();render();});
+document.getElementById("generateBtn").addEventListener("click",generatePlan);
+document.getElementById("restoreCheckedBtn").addEventListener("click",()=>{checkedItems={};save();render();});
+document.getElementById("resetBtn").addEventListener("click",()=>{selectedMeals=[];checkedItems={};dayPreferences=defaultPreferences();save();renderDayPlanner();render();});
+document.getElementById("copyBtn").addEventListener("click",async()=>{if(!selectedMeals.length){alert("Generate a meal plan first.");return;}await navigator.clipboard.writeText(completePlanText());alert("Complete meal plan and unchecked grocery list copied.");});
+document.getElementById("shareGroceriesBtn").addEventListener("click",()=>sharePlainText(groceryText(),"Grocery list"));
+document.getElementById("shareMealsBtn").addEventListener("click",()=>sharePlainText(mealPlanText(),"Meal plan"));
+document.getElementById("closeRecipeBtn").addEventListener("click",closeRecipe);
+document.querySelector("[data-close-recipe]").addEventListener("click",closeRecipe);
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!recipeModal.hidden)closeRecipe();});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js");
+renderDayPlanner();render();
