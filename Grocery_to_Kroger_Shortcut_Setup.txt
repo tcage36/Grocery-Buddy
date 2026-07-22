@@ -1,0 +1,64 @@
+GROCERY TO KROGER — IPHONE SHORTCUT SETUP
+For Grocery Buddy Version 1.5.0
+
+PURPOSE
+This manually launched shortcut reads incomplete reminders from your Grocery list, copies one clean grocery search phrase at a time, and opens the Kroger app. You paste the phrase into Kroger search, choose the exact product, add it to your cart, and return to Shortcuts for the next item.
+
+IMPORTANT NAME
+Name the shortcut exactly:
+Grocery to Kroger
+
+Grocery Buddy's in-app button uses that exact name to launch it.
+
+BUILD THE SHORTCUT
+1. Open Apple's Shortcuts app.
+2. Tap the plus sign to create a new shortcut.
+3. Tap the shortcut name at the top and rename it Grocery to Kroger.
+4. Add the action FIND REMINDERS.
+5. Set its filters:
+   - List is Grocery (or select the exact Reminders list you use)
+   - Is Completed is false
+   - Sort by Creation Date
+   - Order: Oldest First
+6. Add REPEAT WITH EACH. Use the reminders returned by Find Reminders.
+7. Inside the Repeat block, add GET DETAILS OF REMINDERS.
+   - Detail: Title (Apple may call this Name on some versions)
+   - Reminder: Repeat Item
+8. Add SPLIT TEXT.
+   - Text: the reminder title from the previous action
+   - Separator: Custom
+   - Custom separator:  —  
+     That is a space, an em dash, and another space.
+9. Add GET ITEM FROM LIST.
+   - Get: First Item
+   - List: Split Text result
+10. Add COPY TO CLIPBOARD.
+    - Copy: First Item
+11. Add SHOW ALERT.
+    Suggested message:
+    Copied: [First Item]
+    Tap OK to open Kroger. Paste into search, choose the exact product, add it to your cart, then return to Shortcuts.
+12. Add OPEN APP.
+    - App: Kroger
+13. Immediately after Open App, add WAIT TO RETURN.
+    This is essential: it pauses the shortcut on the current grocery item while you use Kroger.
+14. After Wait to Return, add CHOOSE FROM MENU with:
+    - Added — use Edit Reminder or Mark Reminder Complete on the current Repeat Item
+    - Skip — leave the reminder incomplete and continue
+    - Stop — use Stop This Shortcut
+15. After End Repeat, add SHOW NOTIFICATION:
+    Grocery list finished.
+
+WHY WAIT TO RETURN MATTERS
+Without Wait to Return, the Repeat can move to the next reminder immediately and replace the clipboard before you finish adding the current Kroger product.
+
+FIRST TEST
+1. Put two test items in your Grocery Reminders list.
+2. Run Grocery to Kroger directly from Shortcuts.
+3. Confirm each product name is copied without the quantity text after the em dash.
+4. Return to Grocery Buddy and tap Run Grocery to Kroger Shortcut.
+
+NOTES
+- Action wording can vary slightly by iOS version, but searching the capitalized action names should find the correct action.
+- This shortcut intentionally does not choose a Kroger product automatically. You retain control over brand, size, substitutions, sale price, and coupons.
+- Grocery Buddy can launch a saved shortcut by URL, but an unsigned .shortcut file cannot be reliably generated outside Apple's Shortcuts app. Building it once on the iPhone is the dependable method.
