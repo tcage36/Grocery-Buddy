@@ -1,4 +1,4 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.5.0
+GROCERY BUDDY FOR IPHONE — VERSION 1.6.0
 
 BASELINE
 - Built directly from the tested Version 1.4.0 app.
@@ -17,7 +17,7 @@ WHAT CHANGED
 - Added in-app Shortcut setup instructions and a printable text guide.
 
 KROGER SALES LIMITATION
-This remains an offline Home Screen web app. It does not store Kroger credentials and does not place a Kroger API client secret in browser JavaScript. Version 1.5.0 therefore uses sale lines pasted from the Kroger weekly ad. A future connected version can replace this helper with live store-specific product and promotion data through a secure backend.
+This remains an offline Home Screen web app. It does not store Kroger credentials and does not place a Kroger API client secret in browser JavaScript. Version 1.6.0 therefore uses sale lines pasted from the Kroger weekly ad. A future connected version can replace this helper with live store-specific product and promotion data through a secure backend.
 
 GROCERY TO KROGER WORKFLOW
 1. Generate the meal plan and choose any replacement meals.
@@ -31,3 +31,13 @@ Read Grocery_to_Kroger_Shortcut_Setup.txt or tap Shortcut setup inside Grocery B
 
 INSTALL / UPDATE
 Upload this folder's contents to the same web host used for Version 1.4.0. Open the hosted page in Safari and refresh once before reopening the Home Screen app. If the old cache remains, close the Home Screen app, reopen the page in Safari, refresh, and then relaunch. Removing and re-adding the Home Screen icon is only necessary if Safari continues to show the old version or icon.
+
+
+V1.6.0 additions:
+- Favorites with a Favorites-only meal picker filter.
+- Explicit Planned, Made, Carry Over, and Skipped meal statuses.
+- Last-made history updates only when a meal is marked Made.
+- Carry all unmade meals into the next plan.
+- Restored line-by-line Reminders Shortcut export.
+- Short Kroger-compatible grocery text.
+- Removed the obsolete Kroger store/area field.

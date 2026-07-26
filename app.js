@@ -3,7 +3,9 @@ const styles = ["all","Mediterranean","American","Italian","Mexican","Asian-insp
 const styleLabels = { all:"Any style", Mediterranean:"Mediterranean", American:"American", Italian:"Italian", Mexican:"Mexican", "Asian-inspired":"Asian-inspired", Comfort:"Comfort food" };
 const recipeByName = new Map(RECIPES.map(recipe => [recipe.name, recipe]));
 const SHORTCUT_NAME = "Grocery to Kroger";
+const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
+const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}`;
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }
@@ -12,7 +14,7 @@ function loadSelections() {
   return stored.filter(item => item && recipeByName.has(item.name)).map((item, index) => ({
     name:item.name, day:item.day || days[index] || `Dinner ${index + 1}`,
     requestedStyle:item.requestedStyle || item.style || "all", requestedQuick:!!item.requestedQuick,
-    side:item.side || "No side"
+    side:item.side || "No side", status:item.status || "planned"
   }));
 }
 
@@ -20,8 +22,9 @@ let selectedMeals = loadSelections();
 let checkedItems = loadObject("gb_checkedItems", {});
 let dayPreferences = loadObject("gb_dayPreferences", defaultPreferences());
 let saleText = localStorage.getItem("gb_saleText") || "";
-let saleStore = localStorage.getItem("gb_saleStore") || "";
 let saleLines = [];
+let favoriteMeals = new Set(loadObject("gb_favoriteMeals", []));
+let mealHistory = loadObject("gb_mealHistory", {});
 let pickerIndex = -1;
 
 const mealList = document.getElementById("mealList");
@@ -32,14 +35,14 @@ const recipeModal = document.getElementById("recipeModal");
 const mealPickerModal = document.getElementById("mealPickerModal");
 const shortcutModal = document.getElementById("shortcutModal");
 const saleInput = document.getElementById("saleInput");
-const saleStoreInput = document.getElementById("saleStore");
 
 function save() {
   localStorage.setItem("gb_selectedMeals", JSON.stringify(selectedMeals));
   localStorage.setItem("gb_checkedItems", JSON.stringify(checkedItems));
   localStorage.setItem("gb_dayPreferences", JSON.stringify(dayPreferences));
   localStorage.setItem("gb_saleText", saleText);
-  localStorage.setItem("gb_saleStore", saleStore);
+  localStorage.setItem("gb_favoriteMeals", JSON.stringify([...favoriteMeals]));
+  localStorage.setItem("gb_mealHistory", JSON.stringify(mealHistory));
 }
 
 function openModal(modal) { modal.hidden = false; document.body.classList.add("modal-open"); }
@@ -144,6 +147,9 @@ function render() {
   else selectedMeals.forEach((selection,index)=>{
     const recipe=recipeByName.get(selection.name);if(!recipe)return;const node=mealTemplate.content.cloneNode(true);const saleCount=recipeSaleMatches(recipe).length;
     node.querySelector(".meal-day").textContent=selection.day||days[index]||`Dinner ${index+1}`;node.querySelector("h3").textContent=recipe.name;
+    const status=selection.status||"planned";node.querySelector(".meal-status").value=status;node.querySelector(".meal-status").addEventListener("change",e=>setMealStatus(index,e.target.value));
+    const fav=node.querySelector(".favorite-meal");fav.textContent=favoriteMeals.has(recipe.name)?"★":"☆";fav.setAttribute("aria-label",favoriteMeals.has(recipe.name)?"Remove from favorites":"Add to favorites");fav.addEventListener("click",()=>toggleFavorite(recipe.name));
+    const history=mealHistory[recipe.name];node.querySelector(".meal-history").textContent=history?.lastMade?`Last made: ${new Date(history.lastMade).toLocaleDateString()}`:"Not marked as made yet";
     node.querySelector(".meta").textContent=`${recipe.style} • about ${recipe.minutes} minutes • $${recipe.cost}${recipe.minutes<=30?" • Quick":""}${saleCount?` • ${saleLabel(saleCount)}`:""}`;
     node.querySelector(".ingredients").textContent=`Uses: ${recipe.ingredients.slice(0,7).map(line=>INGREDIENT_CATALOG[line.key].label).join(", ")}${recipe.ingredients.length>7?"…":""}`;
     const sideSelect=node.querySelector(".side-select");(SIDE_OPTIONS[recipe.style]||[]).forEach(side=>{const option=document.createElement("option");option.value=side.name;option.textContent=side.name;option.selected=side.name===(selection.side||"No side");sideSelect.appendChild(option);});
@@ -166,6 +172,11 @@ function render() {
   renderSaleStatus();
 }
 
+
+function toggleFavorite(name){if(favoriteMeals.has(name))favoriteMeals.delete(name);else favoriteMeals.add(name);save();render();if(!mealPickerModal.hidden)renderMealChoices();}
+function setMealStatus(index,status){const selection=selectedMeals[index];if(!selection)return;selection.status=status;if(status==="made"&&(selection.status||"planned")!=="made")mealHistory[selection.name]={...(mealHistory[selection.name]||{}),lastMade:new Date().toISOString()};save();render();}
+function carryUnmadeMeals(){const carry=selectedMeals.filter(item=>(item.status||"planned")!=="made"&&(item.status||"planned")!=="skipped");if(!carry.length){alert("There are no unmade meals to carry over.");return;}selectedMeals=carry.map((item,index)=>({...item,day:days[index]||`Dinner ${index+1}`,status:"carried"}));checkedItems={};save();render();alert(`${carry.length} unmade meal${carry.length===1?"":"s"} carried into the next plan.`);}
+
 function renderSaleStatus() {
   const status=document.getElementById("saleStatus");
   if(!saleLines.length){status.textContent="No sales loaded";return;}
@@ -184,7 +195,7 @@ function chooseMeal(preference,usedNames,budget){
 }
 function generatePlan(){
   const count=Number(document.getElementById("mealCount").value),budget=document.getElementById("budget").value,usedNames=new Set(),plan=[];
-  for(let index=0;index<count;index+=1){const preference=dayPreferences[index]||{day:days[index],style:"all",quick:false};const recipe=chooseMeal(preference,usedNames,budget);if(recipe){usedNames.add(recipe.name);plan.push({name:recipe.name,day:days[index],requestedStyle:preference.style,requestedQuick:preference.quick,side:"No side"});}}
+  for(let index=0;index<count;index+=1){const preference=dayPreferences[index]||{day:days[index],style:"all",quick:false};const recipe=chooseMeal(preference,usedNames,budget);if(recipe){usedNames.add(recipe.name);plan.push({name:recipe.name,day:days[index],requestedStyle:preference.style,requestedQuick:preference.quick,side:"No side",status:"planned"});}}
   selectedMeals=plan;checkedItems={};save();render();
 }
 
@@ -194,16 +205,16 @@ function openMealPicker(index){
   document.getElementById("pickerDay").textContent=selection.day||`Dinner ${index+1}`;document.getElementById("mealSearch").value="";document.getElementById("pickerStyle").value=preference.style||"all";document.getElementById("pickerQuick").checked=!!preference.quick;renderMealChoices();openModal(mealPickerModal);document.getElementById("mealSearch").focus();
 }
 function renderMealChoices(){
-  if(pickerIndex<0)return;const search=normalize(document.getElementById("mealSearch").value),style=document.getElementById("pickerStyle").value,quick=document.getElementById("pickerQuick").checked,current=selectedMeals[pickerIndex]?.name;
+  if(pickerIndex<0)return;const search=normalize(document.getElementById("mealSearch").value),style=document.getElementById("pickerStyle").value,quick=document.getElementById("pickerQuick").checked,favoritesOnly=document.getElementById("pickerFavorites").checked,current=selectedMeals[pickerIndex]?.name;
   const matches=RECIPES.filter(recipe=>{
-    if(style!=="all"&&recipe.style!==style)return false;if(quick&&recipe.minutes>30)return false;
+    if(style!=="all"&&recipe.style!==style)return false;if(quick&&recipe.minutes>30)return false;if(favoritesOnly&&!favoriteMeals.has(recipe.name))return false;
     const haystack=normalize(`${recipe.name} ${recipe.style} ${recipe.minutes<=30?"quick":""} ${recipe.ingredients.map(line=>INGREDIENT_CATALOG[line.key].label).join(" ")}`);return !search||haystack.includes(search)||usefulTokens(search).every(token=>usefulTokens(haystack).includes(token));
   }).sort((a,b)=>{const saleDiff=recipeSaleMatches(b).length-recipeSaleMatches(a).length;if(saleDiff)return saleDiff;return a.name.localeCompare(b.name);});
   document.getElementById("pickerCount").textContent=`${matches.length} matching meals`;const container=document.getElementById("mealChoices");container.innerHTML="";
   if(!matches.length){container.innerHTML='<div class="empty">No meals match those filters.</div>';return;}
-  matches.forEach(recipe=>{const button=document.createElement("button");button.type="button";button.className=`meal-choice${recipe.name===current?" current":""}`;const title=document.createElement("h3");title.textContent=recipe.name;const meta=document.createElement("p");meta.textContent=`${recipe.style} • ${recipe.minutes} min • about $${recipe.cost}`;const uses=document.createElement("p");uses.textContent=`Uses: ${recipe.ingredients.slice(0,5).map(line=>INGREDIENT_CATALOG[line.key].label).join(", ")}${recipe.ingredients.length>5?"…":""}`;button.append(title,meta,uses);const sales=recipeSaleMatches(recipe);if(sales.length){const badge=document.createElement("span");badge.className="sale-match";badge.textContent=`${saleLabel(sales.length)}: ${sales.slice(0,2).map(item=>item.raw).join(" • ")}`;button.appendChild(badge);}button.addEventListener("click",()=>selectMealFromPicker(recipe));container.appendChild(button);});
+  matches.forEach(recipe=>{const button=document.createElement("button");button.type="button";button.className=`meal-choice${recipe.name===current?" current":""}`;const title=document.createElement("h3");title.textContent=recipe.name;const meta=document.createElement("p");meta.textContent=`${recipe.style} • ${recipe.minutes} min • about $${recipe.cost}`;const uses=document.createElement("p");uses.textContent=`Uses: ${recipe.ingredients.slice(0,5).map(line=>INGREDIENT_CATALOG[line.key].label).join(", ")}${recipe.ingredients.length>5?"…":""}`;const favorite=document.createElement("span");favorite.className="favorite-badge";favorite.textContent=favoriteMeals.has(recipe.name)?"★ Favorite":"☆";button.append(title,meta,uses,favorite);const sales=recipeSaleMatches(recipe);if(sales.length){const badge=document.createElement("span");badge.className="sale-match";badge.textContent=`${saleLabel(sales.length)}: ${sales.slice(0,2).map(item=>item.raw).join(" • ")}`;button.appendChild(badge);}button.addEventListener("click",()=>selectMealFromPicker(recipe));container.appendChild(button);});
 }
-function selectMealFromPicker(recipe){const current=selectedMeals[pickerIndex];if(!current)return;selectedMeals[pickerIndex]={name:recipe.name,day:current.day,requestedStyle:document.getElementById("pickerStyle").value,requestedQuick:document.getElementById("pickerQuick").checked,side:"No side"};checkedItems={};save();render();closeModal(mealPickerModal);}
+function selectMealFromPicker(recipe){const current=selectedMeals[pickerIndex];if(!current)return;selectedMeals[pickerIndex]={name:recipe.name,day:current.day,status:"planned",requestedStyle:document.getElementById("pickerStyle").value,requestedQuick:document.getElementById("pickerQuick").checked,side:"No side"};checkedItems={};save();render();closeModal(mealPickerModal);}
 
 function purchaseDetail(item,total){
   const useText=`${formatAmount(total)} ${pluralize(item.unit,total)}`;
@@ -215,23 +226,27 @@ function groceryItems(includeChecked=false){
   const combined=new Map();selectedMeals.forEach(selection=>{const recipe=recipeByName.get(selection.name);if(!recipe)return;const side=sideForSelection(selection,recipe);[...recipe.ingredients,...side.ingredients].forEach(line=>{const catalogItem=INGREDIENT_CATALOG[line.key],amount=scaledAmount(line.amount,recipe.baseServings||3);if(!combined.has(line.key))combined.set(line.key,{key:line.key,label:catalogItem.label,amount:0,catalogItem});combined.get(line.key).amount+=amount;});});
   return [...combined.values()].map(item=>({...item,detail:purchaseDetail(item.catalogItem,item.amount),sale:saleMatchFor(item.key,item.catalogItem)})).filter(item=>includeChecked||!checkedItems[item.key]).sort((a,b)=>a.label.localeCompare(b.label));
 }
-function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${item.detail}${item.sale?` • KROGER SALE: ${item.sale.raw}`:""}`).join("\n");}
+function exportPurchaseDetail(item,total){
+  if(item.packageSize){const packages=Math.ceil(total/item.packageSize),noun=pluralize(item.purchaseUnit||"package",packages);const label=(item.packageLabel||"").replace(/\s+can$/i,"");return `${formatAmount(packages)} ${noun}${label?` (${label})`:""}`;}
+  const buyAmount=item.wholePurchase?Math.ceil(total):total;if(item.unit==="count")return `${formatAmount(buyAmount)} ${item.plural&&buyAmount!==1?item.plural:item.label}`;return `${formatAmount(buyAmount)} ${pluralize(item.unit,buyAmount)}`;
+}
+function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${exportPurchaseDetail(item.catalogItem,item.amount)}`).join("\n");}
 function mealPlanText(){return selectedMeals.map(item=>`${item.day}: ${item.name}${item.side&&item.side!=="No side"?` + ${item.side}`:""}`).join("\n");}
-function completePlanText(){const store=saleStore?`\nKroger store/area: ${saleStore}`:"";return `Grocery Buddy Meal Plan${store}\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
-async function sharePlainText(text,successLabel){if(!text.trim()){alert("There are no unchecked items to share.");return;}if(navigator.share){try{await navigator.share({text});return;}catch(error){if(error&&error.name==="AbortError")return;}}try{await navigator.clipboard.writeText(text);alert(`${successLabel} copied. Open Shortcuts and run Add Grocery Buddy List.`);}catch{alert("This browser could not share or copy the list.");}}
-function applySales(){saleText=saleInput.value.trim();saleStore=saleStoreInput.value.trim();saleLines=parseSaleLines(saleText);save();render();if(saleLines.length)alert(`${saleLines.length} Kroger sale lines saved. Meal generation and grocery labels will now use them.`);}
-function clearSales(){saleText="";saleStore="";saleLines=[];saleInput.value="";saleStoreInput.value="";save();render();}
+function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
+async function sendToReminders(text,label){if(!text.trim()){alert("There are no items to send.");return;}try{await navigator.clipboard.writeText(text);window.location.href=REMINDERS_SHORTCUT_RUN_URL;}catch{alert(`${label} could not be copied. Use Copy Complete Plan instead.`);}}
+function applySales(){saleText=saleInput.value.trim();saleLines=parseSaleLines(saleText);save();render();if(saleLines.length)alert(`${saleLines.length} Kroger sale lines saved. Meal generation and grocery labels will now use them.`);}
+function clearSales(){saleText="";saleLines=[];saleInput.value="";save();render();}
 function runKrogerShortcut(){if(!groceryItems(false).length){alert("Send or prepare an unchecked grocery list before running the Kroger shortcut.");return;}window.location.href=SHORTCUT_RUN_URL;}
 
-saleInput.value=saleText;saleStoreInput.value=saleStore;saleLines=parseSaleLines(saleText);populatePickerStyles();
+saleInput.value=saleText;saleLines=parseSaleLines(saleText);populatePickerStyles();
 document.getElementById("mealCount").addEventListener("change",renderDayPlanner);
 document.getElementById("servings").addEventListener("change",()=>{checkedItems={};save();render();});
 document.getElementById("generateBtn").addEventListener("click",generatePlan);
 document.getElementById("restoreCheckedBtn").addEventListener("click",()=>{checkedItems={};save();render();});
 document.getElementById("resetBtn").addEventListener("click",()=>{selectedMeals=[];checkedItems={};dayPreferences=defaultPreferences();save();renderDayPlanner();render();});
 document.getElementById("copyBtn").addEventListener("click",async()=>{if(!selectedMeals.length){alert("Generate a meal plan first.");return;}await navigator.clipboard.writeText(completePlanText());alert("Complete meal plan and unchecked grocery list copied.");});
-document.getElementById("shareGroceriesBtn").addEventListener("click",()=>sharePlainText(groceryText(),"Grocery list"));
-document.getElementById("shareMealsBtn").addEventListener("click",()=>sharePlainText(mealPlanText(),"Meal plan"));
+document.getElementById("shareGroceriesBtn").addEventListener("click",()=>sendToReminders(groceryText(),"Grocery list"));
+document.getElementById("shareMealsBtn").addEventListener("click",()=>sendToReminders(mealPlanText(),"Meal plan"));
 document.getElementById("applySalesBtn").addEventListener("click",applySales);
 document.getElementById("clearSalesBtn").addEventListener("click",clearSales);
 document.getElementById("openWeeklyAdBtn").addEventListener("click",()=>window.open("https://www.kroger.com/weeklyad","_blank","noopener"));
@@ -242,6 +257,8 @@ document.getElementById("runShortcutFromSetupBtn").addEventListener("click",runK
 document.getElementById("mealSearch").addEventListener("input",renderMealChoices);
 document.getElementById("pickerStyle").addEventListener("change",renderMealChoices);
 document.getElementById("pickerQuick").addEventListener("change",renderMealChoices);
+document.getElementById("pickerFavorites").addEventListener("change",renderMealChoices);
+document.getElementById("carryUnmadeBtn").addEventListener("click",carryUnmadeMeals);
 document.getElementById("closeRecipeBtn").addEventListener("click",()=>closeModal(recipeModal));
 document.querySelector("[data-close-recipe]").addEventListener("click",()=>closeModal(recipeModal));
 document.getElementById("closePickerBtn").addEventListener("click",()=>closeModal(mealPickerModal));
