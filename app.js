@@ -5,7 +5,7 @@ const recipeByName = new Map(RECIPES.map(recipe => [recipe.name, recipe]));
 const SHORTCUT_NAME = "Grocery to Kroger";
 const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
-const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}`;
+const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}&input=clipboard`;
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }

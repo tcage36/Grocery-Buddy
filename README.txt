@@ -1,10 +1,15 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.6.0
+GROCERY BUDDY FOR IPHONE — VERSION 1.6.1
 
 BASELINE
 - Built directly from the tested Version 1.4.0 app.
 - Preserves saved meal plans, exact in-app recipes, ingredient quantities, side choices, checked-item hiding, Reminders sharing, and the corrected icon.
 
-WHAT CHANGED
+HOTFIX 1.6.1
+- Fixed Send groceries line by line / Send meals line by line: Grocery Buddy now copies the text and explicitly passes the clipboard as Shortcut Input to Add Grocery Buddy List.
+- This fixes the failure where the Shortcut launched but received no items.
+- Updated the offline cache version so iPhone installs receive the corrected app.js.
+
+WHAT CHANGED FROM 1.4.0
 - Expanded the curated catalog from 48 to 108 meals.
 - Every category now has 18 meals: Mediterranean, American, Italian, Mexican, Asian-inspired, and Comfort.
 - Replaced random Swap with a searchable Choose Meal screen.
