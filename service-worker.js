@@ -1,4 +1,4 @@
-const CACHE = "grocery-buddy-v1-6-1";
+const CACHE = "grocery-buddy-v1-7-0";
 const ASSETS = ["./", "./index.html", "./styles.css", "./data.js", "./app.js", "./manifest.webmanifest", "./icon.svg", "./Grocery_to_Kroger_Shortcut_Setup.txt"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

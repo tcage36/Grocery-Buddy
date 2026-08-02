@@ -23,12 +23,14 @@ const INGREDIENT_CATALOG = {
   "ground beef": {
     "label": "ground beef",
     "unit": "lb",
-    "form": "fresh"
+    "form": "fresh",
+    "purchaseIncrement": 1
   },
   "ground turkey": {
     "label": "ground turkey",
     "unit": "lb",
-    "form": "fresh"
+    "form": "fresh",
+    "purchaseIncrement": 1
   },
   "smoked sausage": {
     "label": "smoked sausage",
