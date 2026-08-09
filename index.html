@@ -15,7 +15,7 @@
 <body>
   <header>
     <div>
-      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.7.0</span></p>
+      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.7.1</span></p>
       <h1>Plan meals. Spend less.</h1>
     </div>
     <button id="resetBtn" class="ghost">Reset</button>
@@ -71,6 +71,7 @@
         <button id="shortcutSetupBtn" class="secondary">Shortcut setup</button>
         <button id="copyBtn" class="secondary">Copy complete plan</button>
       </div>
+      <p class="hint"><strong>Meal export:</strong> uses a separate Shortcut named <strong>Add Grocery Buddy Meals</strong> so meal entries cannot be routed into the Grocery list. See Shortcut setup for the one-time setup.</p>
       <p class="hint"><strong>Backup:</strong> “Copy grocery list” gives you the same newline-separated list if the Shortcut handoff ever fails.</p>
       <p class="hint"><strong>Recommended workflow:</strong> send the grocery list to Reminders, review it, then run the Grocery to Kroger Shortcut. It copies one clean product name at a time so you can paste, choose the exact Kroger product, and add it to your cart.</p>
       <p class="hint"><strong>Checked means already have:</strong> the item disappears immediately and is excluded from Reminders. Use “Restore checked items” if you checked something by mistake.</p>
@@ -114,7 +115,12 @@
     <section class="recipe-sheet shortcut-sheet" role="dialog" aria-modal="true" aria-labelledby="shortcutTitle">
       <div class="recipe-sheet-head"><div><p class="meal-day">IPHONE SHORTCUT</p><h2 id="shortcutTitle">Grocery to Kroger</h2><p class="meta">Build it once, then launch it directly from Grocery Buddy.</p></div><button id="closeShortcutBtn" class="modal-close" aria-label="Close shortcut setup">×</button></div>
       <section class="recipe-section">
-        <h3>Shortcut actions</h3>
+        <h3>Meal Plan export Shortcut</h3>
+        <ol class="instruction-list shortcut-steps"><li>Create a second shortcut named exactly <strong>Add Grocery Buddy Meals</strong>.</li><li>Set it to receive <strong>Clipboard</strong> input when run.</li><li>Add <strong>Split Text</strong> using New Lines.</li><li>Add <strong>Repeat with Each</strong> split line.</li><li>Inside Repeat, add <strong>Add New Reminder</strong> using Repeat Item as the title and choose your <strong>Meal Plan</strong> Reminders list.</li></ol>
+        <p class="hint">This is intentionally separate from Add Grocery Buddy List, which targets Groceries. That prevents meal-plan text from being sent to the wrong list.</p>
+      </section>
+      <section class="recipe-section">
+        <h3>Grocery to Kroger Shortcut actions</h3>
         <ol class="instruction-list shortcut-steps">
           <li>Create a new shortcut named exactly <strong>Grocery to Kroger</strong>.</li>
           <li>Add <strong>Find Reminders</strong>. Filter for your Grocery list and <strong>Is Completed is false</strong>. Sort oldest first.</li>

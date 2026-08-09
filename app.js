@@ -4,8 +4,10 @@ const styleLabels = { all:"Any style", Mediterranean:"Mediterranean", American:"
 const recipeByName = new Map(RECIPES.map(recipe => [recipe.name, recipe]));
 const SHORTCUT_NAME = "Grocery to Kroger";
 const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
+const MEALS_SHORTCUT_NAME = "Add Grocery Buddy Meals";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
 const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}&input=clipboard`;
+const MEALS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(MEALS_SHORTCUT_NAME)}&input=clipboard`;
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }
@@ -26,6 +28,7 @@ let saleLines = [];
 let favoriteMeals = new Set(loadObject("gb_favoriteMeals", []));
 let mealHistory = loadObject("gb_mealHistory", {});
 let carryOverMeals = loadObject("gb_carryOverMeals", []).filter(item => item && recipeByName.has(item.name));
+let recipeNotes = loadObject("gb_recipeNotes", {});
 let pickerIndex = -1;
 
 const mealList = document.getElementById("mealList");
@@ -45,6 +48,7 @@ function save() {
   localStorage.setItem("gb_favoriteMeals", JSON.stringify([...favoriteMeals]));
   localStorage.setItem("gb_mealHistory", JSON.stringify(mealHistory));
   localStorage.setItem("gb_carryOverMeals", JSON.stringify(carryOverMeals));
+  localStorage.setItem("gb_recipeNotes", JSON.stringify(recipeNotes));
 }
 
 function openModal(modal) { modal.hidden = false; document.body.classList.add("modal-open"); }
@@ -139,6 +143,16 @@ function openRecipe(selection,index) {
     const sideIngredients=document.createElement("ul");sideIngredients.className="recipe-list";side.ingredients.forEach(line=>{const li=document.createElement("li");li.textContent=recipeIngredientText(line,3);sideIngredients.appendChild(li);});sideSection.appendChild(sideIngredients);
     const sideSteps=document.createElement("ol");sideSteps.className="instruction-list";side.instructions.forEach(step=>{const li=document.createElement("li");li.textContent=step;sideSteps.appendChild(li);});sideSection.appendChild(sideSteps);body.appendChild(sideSection);
   }
+  const notesSection=document.createElement("section");notesSection.className="recipe-section note-section";
+  const notesHeading=document.createElement("h3");notesHeading.textContent="My recipe note";notesSection.appendChild(notesHeading);
+  const noteHint=document.createElement("p");noteHint.className="hint note-hint";noteHint.textContent="Informational only. Grocery Buddy never changes the recipe from this note. Link an ingredient only when you want the note flagged beside that grocery item.";notesSection.appendChild(noteHint);
+  const savedNote=recipeNotes[recipe.name]||{text:"",ingredientKey:""};
+  const noteArea=document.createElement("textarea");noteArea.rows=3;noteArea.placeholder="Examples: omit peas; use less salt; add extra sauce";noteArea.value=savedNote.text||"";notesSection.appendChild(noteArea);
+  const ingredientLabel=document.createElement("label");ingredientLabel.textContent="Flag this ingredient on the grocery list (optional)";
+  const ingredientSelect=document.createElement("select");const none=document.createElement("option");none.value="";none.textContent="No grocery-list flag";ingredientSelect.appendChild(none);
+  recipe.ingredients.forEach(line=>{const option=document.createElement("option");option.value=line.key;option.textContent=INGREDIENT_CATALOG[line.key]?.label||line.key;option.selected=line.key===savedNote.ingredientKey;ingredientSelect.appendChild(option);});
+  ingredientLabel.appendChild(ingredientSelect);notesSection.appendChild(ingredientLabel);
+  const saveNoteBtn=document.createElement("button");saveNoteBtn.type="button";saveNoteBtn.className="secondary note-save";saveNoteBtn.textContent="Save recipe note";saveNoteBtn.addEventListener("click",()=>{const text=noteArea.value.trim(),ingredientKey=ingredientSelect.value;if(text)recipeNotes[recipe.name]={text,ingredientKey};else delete recipeNotes[recipe.name];save();render();saveNoteBtn.textContent="Saved ✓";setTimeout(()=>saveNoteBtn.textContent="Save recipe note",1200);});notesSection.appendChild(saveNoteBtn);body.appendChild(notesSection);
   const source=document.createElement("p");source.className="recipe-source";source.textContent=`${recipe.source}. This stored recipe is the source used to build the grocery quantities above.`;body.appendChild(source);
   openModal(recipeModal); document.getElementById("closeRecipeBtn").focus();
 }
@@ -154,6 +168,7 @@ function render() {
     const history=mealHistory[recipe.name];node.querySelector(".meal-history").textContent=history?.lastMade?`Last made: ${new Date(history.lastMade).toLocaleDateString()}`:"Not marked as made yet";
     node.querySelector(".meta").textContent=`${recipe.style} • about ${recipe.minutes} minutes • $${recipe.cost}${recipe.minutes<=30?" • Quick":""}${saleCount?` • ${saleLabel(saleCount)}`:""}`;
     node.querySelector(".ingredients").textContent=`Uses: ${recipe.ingredients.slice(0,7).map(line=>INGREDIENT_CATALOG[line.key].label).join(", ")}${recipe.ingredients.length>7?"…":""}`;
+    const savedNote=recipeNotes[recipe.name];if(savedNote?.text){const note=document.createElement("p");note.className="recipe-note-preview";note.textContent=`My note: ${savedNote.text}`;node.querySelector(".ingredients").after(note);}
     const sideSelect=node.querySelector(".side-select");(SIDE_OPTIONS[recipe.style]||[]).forEach(side=>{const option=document.createElement("option");option.value=side.name;option.textContent=side.name;option.selected=side.name===(selection.side||"No side");sideSelect.appendChild(option);});
     sideSelect.addEventListener("change",()=>{selectedMeals[index].side=sideSelect.value;checkedItems={};save();render();});
     node.querySelector(".recipe-link").addEventListener("click",()=>openRecipe(selection,index));
@@ -166,7 +181,8 @@ function render() {
   else activeItems.forEach(item=>{
     const row=document.createElement("label");row.className="grocery-item";const check=document.createElement("input");check.type="checkbox";check.setAttribute("aria-label",`Already have ${item.label}`);check.addEventListener("change",()=>{checkedItems[item.key]=true;save();render();});
     const textWrap=document.createElement("span"),name=document.createElement("strong");name.textContent=item.label;const detail=document.createElement("small");detail.textContent=item.detail;textWrap.append(name,detail);
-    if(item.sale){const badge=document.createElement("span");badge.className="sale-match";badge.textContent=`Kroger sale: ${item.sale.raw}`;textWrap.appendChild(badge);}row.append(check,textWrap);groceryList.appendChild(row);
+    if(item.sale){const badge=document.createElement("span");badge.className="sale-match";badge.textContent=`Kroger sale: ${item.sale.raw}`;textWrap.appendChild(badge);}
+    (item.notes||[]).forEach(note=>{const badge=document.createElement("span");badge.className="recipe-note-flag";badge.textContent=`⚑ ${note.recipe}: ${note.text}`;textWrap.appendChild(badge);});row.append(check,textWrap);groceryList.appendChild(row);
   });
   const validKeys=new Set(groceryItems(true).map(item=>item.key));const hiddenCount=Object.keys(checkedItems).filter(key=>checkedItems[key]&&validKeys.has(key)).length;
   document.getElementById("itemCount").textContent=hiddenCount?`${activeItems.length} to buy • ${hiddenCount} have`:`${activeItems.length} items`;
@@ -260,7 +276,7 @@ function purchaseDetail(item,total){
 }
 function groceryItems(includeChecked=false){
   const combined=new Map();selectedMeals.forEach(selection=>{const recipe=recipeByName.get(selection.name);if(!recipe)return;const side=sideForSelection(selection,recipe);[...recipe.ingredients,...side.ingredients].forEach(line=>{const catalogItem=INGREDIENT_CATALOG[line.key],amount=scaledAmount(line.amount,recipe.baseServings||3);if(!combined.has(line.key))combined.set(line.key,{key:line.key,label:catalogItem.label,amount:0,catalogItem});combined.get(line.key).amount+=amount;});});
-  return [...combined.values()].map(item=>({...item,detail:purchaseDetail(item.catalogItem,item.amount),sale:saleMatchFor(item.key,item.catalogItem)})).filter(item=>includeChecked||!checkedItems[item.key]).sort((a,b)=>a.label.localeCompare(b.label));
+  return [...combined.values()].map(item=>{const notes=selectedMeals.map(selection=>({recipe:selection.name,note:recipeNotes[selection.name]})).filter(entry=>entry.note?.text&&entry.note.ingredientKey===item.key).map(entry=>({recipe:entry.recipe,text:entry.note.text}));return {...item,detail:purchaseDetail(item.catalogItem,item.amount),sale:saleMatchFor(item.key,item.catalogItem),notes};}).filter(item=>includeChecked||!checkedItems[item.key]).sort((a,b)=>a.label.localeCompare(b.label));
 }
 function exportPurchaseDetail(item,total){
   if(item.packageSize){const packages=Math.ceil((total-1e-9)/item.packageSize),noun=pluralize(item.purchaseUnit||"package",packages);const label=(item.packageLabel||"").replace(/\s+can$/i,"");return `${formatAmount(packages)} ${noun}${label?` (${label})`:""}`;}
@@ -292,10 +308,10 @@ ${errors.slice(0,6).join("\n")}${errors.length>6?`
 …and ${errors.length-6} more`:""}`);return false;}
   return true;
 }
-function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${exportPurchaseDetail(item.catalogItem,item.amount)}`).join("\n");}
+function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${exportPurchaseDetail(item.catalogItem,item.amount)}${item.notes?.length?` • NOTE: ${item.notes.map(note=>note.text).join(" / ")}`:""}`).join("\n");}
 function mealPlanText(){return selectedMeals.map(item=>`${item.day}: ${item.name}${item.side&&item.side!=="No side"?` + ${item.side}`:""}`).join("\n");}
 function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
-async function sendToReminders(text,label,isGrocery=false){if(!text.trim()){alert("There are no items to send.");return;}if(isGrocery&&!groceryExportReady())return;try{await navigator.clipboard.writeText(text);window.location.href=REMINDERS_SHORTCUT_RUN_URL;}catch{alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);}}
+async function sendToReminders(text,label,isGrocery=false){if(!text.trim()){alert("There are no items to send.");return;}if(isGrocery&&!groceryExportReady())return;try{await navigator.clipboard.writeText(text);window.location.href=isGrocery?REMINDERS_SHORTCUT_RUN_URL:MEALS_SHORTCUT_RUN_URL;}catch{alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);}}
 async function copyGroceryList(){if(!groceryItems(false).length){alert("There are no unchecked groceries to copy.");return;}if(!groceryExportReady())return;try{await navigator.clipboard.writeText(groceryText());alert("Unchecked grocery list copied line by line.");}catch{alert("Grocery list could not be copied.");}}
 function applySales(){saleText=saleInput.value.trim();saleLines=parseSaleLines(saleText);save();render();if(saleLines.length)alert(`${saleLines.length} Kroger sale lines saved. Meal generation and grocery labels will now use them.`);}
 function clearSales(){saleText="";saleLines=[];saleInput.value="";save();render();}
