@@ -9,13 +9,13 @@
   <meta name="apple-mobile-web-app-title" content="Grocery Buddy" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=1.7.3" />
+  <link rel="stylesheet" href="styles.css?v=1.7.4" />
   <title>Grocery Buddy</title>
 </head>
 <body>
   <header>
     <div>
-      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.7.3</span></p>
+      <p class="eyebrow">GROCERY BUDDY <span class="version">V1.7.4</span></p>
       <h1>Plan meals. Spend less.</h1>
     </div>
     <button id="resetBtn" class="ghost">Reset</button>
@@ -116,8 +116,8 @@
       <div class="recipe-sheet-head"><div><p class="meal-day">IPHONE SHORTCUT</p><h2 id="shortcutTitle">Grocery to Kroger</h2><p class="meta">Build it once, then launch it directly from Grocery Buddy.</p></div><button id="closeShortcutBtn" class="modal-close" aria-label="Close shortcut setup">×</button></div>
       <section class="recipe-section">
         <h3>Meal Plan export Shortcut</h3>
-        <ol class="instruction-list shortcut-steps"><li>Create a second shortcut named exactly <strong>Add Grocery Buddy Meals</strong>.</li><li>Make the <strong>first action Get Clipboard</strong>. Do not use Shortcut Input or URL input for the meal text.</li><li>Add <strong>Split Text</strong> using New Lines on the Clipboard result.</li><li>Add <strong>Repeat with Each</strong> split line.</li><li>Inside Repeat, add <strong>Add New Reminder</strong> using Repeat Item as the title and choose your <strong>Meal Plan</strong> Reminders list.</li></ol>
-        <p class="hint">This is intentionally separate from Add Grocery Buddy List, which targets Groceries. Version 1.7.3 copies plain text to the clipboard and launches each Shortcut by name only, so URL encoding cannot become the reminder text.</p>
+        <ol class="instruction-list shortcut-steps"><li>Duplicate the working <strong>Add Grocery Buddy List</strong> shortcut and rename the copy exactly <strong>Add Grocery Buddy Meals</strong>.</li><li>Keep the same input flow: <strong>Receive Text</strong> / <strong>Shortcut Input</strong>, then <strong>Split Text by New Lines</strong>.</li><li>Keep <strong>Repeat with Each</strong> split line and use Repeat Item as the reminder title.</li><li>Change only the destination Reminders list from <strong>Groceries</strong> to <strong>Meal Plan</strong>.</li></ol>
+        <p class="hint">Both export buttons now use the same proven mechanism: Grocery Buddy copies newline-separated plain text, passes the clipboard as Shortcut Input, and the Shortcut splits it into separate reminders. The only differences are the Shortcut name and destination Reminders list.</p>
       </section>
       <section class="recipe-section">
         <h3>Grocery to Kroger Shortcut actions</h3>
@@ -141,7 +141,7 @@
     </section>
   </div>
 
-  <script src="data.js?v=1.7.3"></script>
-  <script src="app.js?v=1.7.3"></script>
+  <script src="data.js?v=1.7.4"></script>
+  <script src="app.js?v=1.7.4"></script>
 </body>
 </html>

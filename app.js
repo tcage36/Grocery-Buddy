@@ -6,11 +6,8 @@ const SHORTCUT_NAME = "Grocery to Kroger";
 const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const MEALS_SHORTCUT_NAME = "Add Grocery Buddy Meals";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
-function shortcutRunUrl(name) {
-  // Clipboard text is read by the Shortcut itself. Do not attach input to this URL:
-  // iOS may expose URL-encoded text (%20, %0A, etc.) as the Shortcut input.
-  return `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&gbv=1.7.3`;
-}
+const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}&input=clipboard`;
+const MEALS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(MEALS_SHORTCUT_NAME)}&input=clipboard`;
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }
@@ -317,12 +314,12 @@ function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n
 async function sendToReminders(text,label,isGrocery=false){
   if(!text.trim()){alert("There are no items to send.");return;}
   if(isGrocery&&!groceryExportReady())return;
-  const shortcutName = isGrocery ? REMINDERS_SHORTCUT_NAME : MEALS_SHORTCUT_NAME;
+  const shortcutUrl = isGrocery ? REMINDERS_SHORTCUT_RUN_URL : MEALS_SHORTCUT_RUN_URL;
   try{
     await navigator.clipboard.writeText(text);
-    // Copy plain text first, then launch the destination Shortcut by name ONLY.
-    // The Shortcut must begin with Get Clipboard; no meal/grocery text travels in the URL.
-    window.location.assign(shortcutRunUrl(shortcutName));
+    // Both exports use the same proven handoff: copy newline-separated plain text,
+    // then pass the clipboard as Shortcut Input. Only the Shortcut name differs.
+    window.location.href = shortcutUrl;
   }catch{
     alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);
   }
