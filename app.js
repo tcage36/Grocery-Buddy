@@ -6,8 +6,9 @@ const SHORTCUT_NAME = "Grocery to Kroger";
 const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const MEALS_SHORTCUT_NAME = "Add Grocery Buddy Meals";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
-const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}&input=clipboard`;
-const MEALS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(MEALS_SHORTCUT_NAME)}&input=clipboard`;
+function shortcutClipboardUrl(name) {
+  return `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=clipboard&gbv=1.7.2`;
+}
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }
@@ -311,7 +312,19 @@ ${errors.slice(0,6).join("\n")}${errors.length>6?`
 function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${exportPurchaseDetail(item.catalogItem,item.amount)}${item.notes?.length?` • NOTE: ${item.notes.map(note=>note.text).join(" / ")}`:""}`).join("\n");}
 function mealPlanText(){return selectedMeals.map(item=>`${item.day}: ${item.name}${item.side&&item.side!=="No side"?` + ${item.side}`:""}`).join("\n");}
 function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
-async function sendToReminders(text,label,isGrocery=false){if(!text.trim()){alert("There are no items to send.");return;}if(isGrocery&&!groceryExportReady())return;try{await navigator.clipboard.writeText(text);window.location.href=isGrocery?REMINDERS_SHORTCUT_RUN_URL:MEALS_SHORTCUT_RUN_URL;}catch{alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);}}
+async function sendToReminders(text,label,isGrocery=false){
+  if(!text.trim()){alert("There are no items to send.");return;}
+  if(isGrocery&&!groceryExportReady())return;
+  const shortcutName = isGrocery ? REMINDERS_SHORTCUT_NAME : MEALS_SHORTCUT_NAME;
+  try{
+    await navigator.clipboard.writeText(text);
+    // Build the destination URL only after this button's destination is known.
+    // This prevents a stale shared URL constant from routing meals to Groceries.
+    window.location.assign(shortcutClipboardUrl(shortcutName));
+  }catch{
+    alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);
+  }
+}
 async function copyGroceryList(){if(!groceryItems(false).length){alert("There are no unchecked groceries to copy.");return;}if(!groceryExportReady())return;try{await navigator.clipboard.writeText(groceryText());alert("Unchecked grocery list copied line by line.");}catch{alert("Grocery list could not be copied.");}}
 function applySales(){saleText=saleInput.value.trim();saleLines=parseSaleLines(saleText);save();render();if(saleLines.length)alert(`${saleLines.length} Kroger sale lines saved. Meal generation and grocery labels will now use them.`);}
 function clearSales(){saleText="";saleLines=[];saleInput.value="";save();render();}
