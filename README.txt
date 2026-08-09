@@ -1,11 +1,11 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.7.4
+GROCERY BUDDY FOR IPHONE — VERSION 1.7.5
 
 BASELINE
 - Built directly from the tested Version 1.4.0 app.
 - Preserves saved meal plans, exact in-app recipes, ingredient quantities, side choices, checked-item hiding, Reminders sharing, and the corrected icon.
 
 HOTFIX 1.6.1
-- Fixed Send groceries line by line / Send meals line by line: Grocery Buddy iPhone V1.7.4 — Reliability + Recipe Notes Test Build
+- Fixed Send groceries line by line / Send meals line by line: Grocery Buddy iPhone V1.7.5 — Reliability + Recipe Notes Test Build
 - This fixes the failure where the Shortcut launched but received no items.
 - Updated the offline cache version so iPhone installs receive the corrected app.js.
 
@@ -77,19 +77,19 @@ V1.7.2 HOTFIX
 - Grocery export still targets “Add Grocery Buddy List”; meal export targets “Add Grocery Buddy Meals”. Both pass content through Clipboard so reminders are created as normal text instead of URL-encoded text.
 
 
-V1.7.4 CLIPBOARD-ONLY REMINDERS HOTFIX
+V1.7.5 CLIPBOARD-ONLY REMINDERS HOTFIX
 - Fixed the remaining URL-formatted Meal Plan export (%20, %0A, %3A, etc.).
 - Grocery Buddy now writes normal text to the iPhone clipboard, then launches Add Grocery Buddy Meals or Add Grocery Buddy List by name only.
 - No grocery or meal-plan content is attached to the shortcuts:// URL.
 - Both Reminders export Shortcuts must start with Get Clipboard, then Split Text by New Lines, Repeat with Each, and Add New Reminder using Repeat Item.
 - Add Grocery Buddy Meals targets the Meal Plan list; Add Grocery Buddy List targets the Groceries list.
-- Updated cache-busting, service-worker cache, and PWA start URL to 1.7.4.
+- Updated cache-busting, service-worker cache, and PWA start URL to 1.7.5.
 
-IMPORTANT SHORTCUT CHECK FOR 1.7.4
+IMPORTANT SHORTCUT CHECK FOR 1.7.5
 For Add Grocery Buddy Meals, make the FIRST action Get Clipboard. Remove any action/setting that uses Shortcut Input as the meal text. Then Split the Clipboard result by New Lines. This prevents iOS URL encoding from becoming reminder text.
 
 
-V1.7.4 APP-BREAKING MEAL EXPORT HOTFIX
+V1.7.5 APP-BREAKING MEAL EXPORT HOTFIX
 - Grocery export remains on the already-proven Add Grocery Buddy List workflow.
 - Meal export now mirrors that workflow exactly, using Add Grocery Buddy Meals.
 - Grocery Buddy first copies newline-separated plain text to the clipboard, then launches the selected Shortcut with input=clipboard so the clipboard arrives as Shortcut Input.
@@ -97,3 +97,10 @@ V1.7.4 APP-BREAKING MEAL EXPORT HOTFIX
 - The ONLY intended differences are Shortcut name and destination list: Add Grocery Buddy List -> Groceries; Add Grocery Buddy Meals -> Meal Plan.
 - Do NOT change the working grocery shortcut. The meal shortcut can simply be a duplicate of it with the name and destination list changed.
 - Acceptance criteria: grocery export produces separate normal grocery reminders; meal export produces separate normal meal reminders; neither produces URL-encoded %20/%0A/%3A text or No Data.
+
+
+V1.7.5 TEST HOTFIX
+- Meal export is now a literal duplicate of the working grocery export routine, with only the text source and Shortcut name changed.
+- Grocery export was not otherwise changed.
+- Service-worker registration is disabled for this test build and prior Grocery Buddy caches are actively removed on load so stale app.js cannot control export behavior.
+- Add Grocery Buddy Meals should remain a duplicate of Add Grocery Buddy List with only its Reminders destination changed to Meal Plan.

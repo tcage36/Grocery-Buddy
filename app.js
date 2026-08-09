@@ -311,17 +311,26 @@ ${errors.slice(0,6).join("\n")}${errors.length>6?`
 function groceryText(){return groceryItems(false).map(item=>`${item.label} — ${exportPurchaseDetail(item.catalogItem,item.amount)}${item.notes?.length?` • NOTE: ${item.notes.map(note=>note.text).join(" / ")}`:""}`).join("\n");}
 function mealPlanText(){return selectedMeals.map(item=>`${item.day}: ${item.name}${item.side&&item.side!=="No side"?` + ${item.side}`:""}`).join("\n");}
 function completePlanText(){return `Grocery Buddy Meal Plan\n${mealPlanText()}\n\nGrocery List\n${groceryText()}`;}
-async function sendToReminders(text,label,isGrocery=false){
+async function sendGroceriesToReminders(){
+  const text = groceryText();
   if(!text.trim()){alert("There are no items to send.");return;}
-  if(isGrocery&&!groceryExportReady())return;
-  const shortcutUrl = isGrocery ? REMINDERS_SHORTCUT_RUN_URL : MEALS_SHORTCUT_RUN_URL;
+  if(!groceryExportReady())return;
   try{
     await navigator.clipboard.writeText(text);
-    // Both exports use the same proven handoff: copy newline-separated plain text,
-    // then pass the clipboard as Shortcut Input. Only the Shortcut name differs.
-    window.location.href = shortcutUrl;
+    window.location.href = REMINDERS_SHORTCUT_RUN_URL;
   }catch{
-    alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);
+    alert("Grocery list could not be copied. Use Copy Grocery List or Copy Complete Plan instead.");
+  }
+}
+
+async function sendMealsToReminders(){
+  const text = mealPlanText();
+  if(!text.trim()){alert("There are no items to send.");return;}
+  try{
+    await navigator.clipboard.writeText(text);
+    window.location.href = MEALS_SHORTCUT_RUN_URL;
+  }catch{
+    alert("Meal plan could not be copied. Use Copy Complete Plan instead.");
   }
 }
 async function copyGroceryList(){if(!groceryItems(false).length){alert("There are no unchecked groceries to copy.");return;}if(!groceryExportReady())return;try{await navigator.clipboard.writeText(groceryText());alert("Unchecked grocery list copied line by line.");}catch{alert("Grocery list could not be copied.");}}
@@ -336,9 +345,9 @@ document.getElementById("generateBtn").addEventListener("click",generatePlan);
 document.getElementById("restoreCheckedBtn").addEventListener("click",()=>{checkedItems={};save();render();});
 document.getElementById("resetBtn").addEventListener("click",()=>{selectedMeals=[];checkedItems={};carryOverMeals=[];dayPreferences=defaultPreferences();save();renderDayPlanner();render();});
 document.getElementById("copyBtn").addEventListener("click",async()=>{if(!selectedMeals.length){alert("Generate a meal plan first.");return;}await navigator.clipboard.writeText(completePlanText());alert("Complete meal plan and unchecked grocery list copied.");});
-document.getElementById("shareGroceriesBtn").addEventListener("click",()=>sendToReminders(groceryText(),"Grocery list",true));
+document.getElementById("shareGroceriesBtn").addEventListener("click",sendGroceriesToReminders);
 document.getElementById("copyGroceriesBtn").addEventListener("click",copyGroceryList);
-document.getElementById("shareMealsBtn").addEventListener("click",()=>sendToReminders(mealPlanText(),"Meal plan"));
+document.getElementById("shareMealsBtn").addEventListener("click",sendMealsToReminders);
 document.getElementById("applySalesBtn").addEventListener("click",applySales);
 document.getElementById("clearSalesBtn").addEventListener("click",clearSales);
 document.getElementById("openWeeklyAdBtn").addEventListener("click",()=>window.open("https://www.kroger.com/weeklyad","_blank","noopener"));
@@ -358,5 +367,8 @@ document.querySelector("[data-close-picker]").addEventListener("click",()=>close
 document.getElementById("closeShortcutBtn").addEventListener("click",()=>closeModal(shortcutModal));
 document.querySelector("[data-close-shortcut]").addEventListener("click",()=>closeModal(shortcutModal));
 document.addEventListener("keydown",event=>{if(event.key!=="Escape")return;if(!recipeModal.hidden)closeModal(recipeModal);else if(!mealPickerModal.hidden)closeModal(mealPickerModal);else if(!shortcutModal.hidden)closeModal(shortcutModal);});
-if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js");
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.getRegistrations().then(registrations=>registrations.forEach(registration=>registration.unregister()));
+}
+if("caches" in window){caches.keys().then(keys=>Promise.all(keys.map(key=>caches.delete(key))));}
 renderDayPlanner();render();
