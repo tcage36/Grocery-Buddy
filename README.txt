@@ -1,11 +1,11 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.7.2
+GROCERY BUDDY FOR IPHONE — VERSION 1.7.3
 
 BASELINE
 - Built directly from the tested Version 1.4.0 app.
 - Preserves saved meal plans, exact in-app recipes, ingredient quantities, side choices, checked-item hiding, Reminders sharing, and the corrected icon.
 
 HOTFIX 1.6.1
-- Fixed Send groceries line by line / Send meals line by line: Grocery Buddy iPhone V1.7.2 — Reliability + Recipe Notes Test Build
+- Fixed Send groceries line by line / Send meals line by line: Grocery Buddy iPhone V1.7.3 — Reliability + Recipe Notes Test Build
 - This fixes the failure where the Shortcut launched but received no items.
 - Updated the offline cache version so iPhone installs receive the corrected app.js.
 
@@ -75,3 +75,15 @@ V1.7.2 HOTFIX
 - Added hard cache-busting to app.js, data.js, and styles.css and bumped the service-worker cache to v1.7.2 so an installed iPhone web app cannot silently keep running the older export code.
 - Updated the PWA start URL to version 1.7.2.
 - Grocery export still targets “Add Grocery Buddy List”; meal export targets “Add Grocery Buddy Meals”. Both pass content through Clipboard so reminders are created as normal text instead of URL-encoded text.
+
+
+V1.7.3 CLIPBOARD-ONLY REMINDERS HOTFIX
+- Fixed the remaining URL-formatted Meal Plan export (%20, %0A, %3A, etc.).
+- Grocery Buddy now writes normal text to the iPhone clipboard, then launches Add Grocery Buddy Meals or Add Grocery Buddy List by name only.
+- No grocery or meal-plan content is attached to the shortcuts:// URL.
+- Both Reminders export Shortcuts must start with Get Clipboard, then Split Text by New Lines, Repeat with Each, and Add New Reminder using Repeat Item.
+- Add Grocery Buddy Meals targets the Meal Plan list; Add Grocery Buddy List targets the Groceries list.
+- Updated cache-busting, service-worker cache, and PWA start URL to 1.7.3.
+
+IMPORTANT SHORTCUT CHECK FOR 1.7.3
+For Add Grocery Buddy Meals, make the FIRST action Get Clipboard. Remove any action/setting that uses Shortcut Input as the meal text. Then Split the Clipboard result by New Lines. This prevents iOS URL encoding from becoming reminder text.

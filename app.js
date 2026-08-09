@@ -6,8 +6,10 @@ const SHORTCUT_NAME = "Grocery to Kroger";
 const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const MEALS_SHORTCUT_NAME = "Add Grocery Buddy Meals";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
-function shortcutClipboardUrl(name) {
-  return `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=clipboard&gbv=1.7.2`;
+function shortcutRunUrl(name) {
+  // Clipboard text is read by the Shortcut itself. Do not attach input to this URL:
+  // iOS may expose URL-encoded text (%20, %0A, etc.) as the Shortcut input.
+  return `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&gbv=1.7.3`;
 }
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
@@ -318,9 +320,9 @@ async function sendToReminders(text,label,isGrocery=false){
   const shortcutName = isGrocery ? REMINDERS_SHORTCUT_NAME : MEALS_SHORTCUT_NAME;
   try{
     await navigator.clipboard.writeText(text);
-    // Build the destination URL only after this button's destination is known.
-    // This prevents a stale shared URL constant from routing meals to Groceries.
-    window.location.assign(shortcutClipboardUrl(shortcutName));
+    // Copy plain text first, then launch the destination Shortcut by name ONLY.
+    // The Shortcut must begin with Get Clipboard; no meal/grocery text travels in the URL.
+    window.location.assign(shortcutRunUrl(shortcutName));
   }catch{
     alert(`${label} could not be copied. Use Copy Grocery List or Copy Complete Plan instead.`);
   }
