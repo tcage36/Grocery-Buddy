@@ -7,7 +7,6 @@ const REMINDERS_SHORTCUT_NAME = "Add Grocery Buddy List";
 const MEALS_SHORTCUT_NAME = "Add Grocery Buddy Meals";
 const SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}`;
 const REMINDERS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(REMINDERS_SHORTCUT_NAME)}&input=clipboard`;
-const MEALS_SHORTCUT_RUN_URL = `shortcuts://run-shortcut?name=${encodeURIComponent(MEALS_SHORTCUT_NAME)}&input=clipboard`;
 
 function defaultPreferences() { return days.map((day, index) => ({ day, style:index < 2 ? "Mediterranean" : "all", quick:false })); }
 function loadObject(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; } }
@@ -323,15 +322,18 @@ async function sendGroceriesToReminders(){
   }
 }
 
+function buildMealShortcutUrl(text){
+  // Apple Shortcuts URL scheme: input=text with a single URL-encoded text parameter.
+  // Shortcuts decodes the parameter and exposes the result as plain Shortcut Input.
+  return `shortcuts://run-shortcut?name=${encodeURIComponent(MEALS_SHORTCUT_NAME)}&input=text&text=${encodeURIComponent(text)}`;
+}
+
 async function sendMealsToReminders(){
   const text = mealPlanText();
   if(!text.trim()){alert("There are no items to send.");return;}
-  try{
-    await navigator.clipboard.writeText(text);
-    window.location.href = MEALS_SHORTCUT_RUN_URL;
-  }catch{
-    alert("Meal plan could not be copied. Use Copy Complete Plan instead.");
-  }
+  // Do not use the clipboard handoff for meals. On the tested iPhone that path
+  // surfaced percent-encoded clipboard content inside Shortcut Input.
+  window.location.href = buildMealShortcutUrl(text);
 }
 async function copyGroceryList(){if(!groceryItems(false).length){alert("There are no unchecked groceries to copy.");return;}if(!groceryExportReady())return;try{await navigator.clipboard.writeText(groceryText());alert("Unchecked grocery list copied line by line.");}catch{alert("Grocery list could not be copied.");}}
 function applySales(){saleText=saleInput.value.trim();saleLines=parseSaleLines(saleText);save();render();if(saleLines.length)alert(`${saleLines.length} Kroger sale lines saved. Meal generation and grocery labels will now use them.`);}
