@@ -1,4 +1,15 @@
-GROCERY BUDDY FOR IPHONE — VERSION 1.7.6
+GROCERY BUDDY FOR IPHONE — VERSION 1.8.0
+
+VERSION 1.8.0
+- Replaces random meal selection with a variety-first planning score that rotates proteins, limits recent repeats, balances quick and involved meals, mixes costs, uses favorites in moderation, and still honors day style, quick, budget, carry-over, and Kroger sale preferences.
+- Preserves all 108 curated v1.7.6 recipes and enriches each at runtime with category, protein, prep/cook split, difficulty, cleanup effort, estimated cost, suggested sides, and multiple planning/filter tags.
+- Tracks times cooked and a bounded recent-usage history alongside the existing last-made date. Existing history, favorites, recipe notes, plans, settings, and carry-over data remain compatible.
+- Recipe tags and richer details now appear in recipe views and meal search without changing the established planning workflow.
+- Grocery generation continues to combine exact catalog ingredient keys and sum scaled quantities before producing the unchanged Kroger-compatible export format.
+
+REGRESSION NOTE
+- The v1.7.6 grocery and meal Shortcut export routines are intentionally unchanged.
+- The existing 108-recipe library exceeds the approximately 50-recipe target, so no recipes were removed.
 
 BASELINE
 - Built directly from the tested Version 1.4.0 app.

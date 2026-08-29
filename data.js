@@ -404,7 +404,7 @@ const INGREDIENT_CATALOG = {
     "packageLabel": "12 oz bag"
   },
   "frozen corn": {
-    "label": "corn",
+    "label": "frozen corn",
     "unit": "oz",
     "form": "frozen",
     "packageSize": 12,
@@ -420,7 +420,7 @@ const INGREDIENT_CATALOG = {
     "packageLabel": "12 oz bag"
   },
   "corn": {
-    "label": "corn",
+    "label": "canned corn",
     "unit": "can",
     "form": "15 oz can, drained",
     "packageSize": 1,
